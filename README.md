@@ -1,105 +1,101 @@
-# Evergreen CRM Skills for Claude Code
+<p align="center">
+  <img src="images/logo.png" alt="Evergreen" width="128" height="128">
+</p>
 
-A comprehensive set of Claude Code skills for personal CRM workflows with [Evergreen](https://heltonlabs.com/evergreen), the local-first personal CRM for macOS.
+<h1 align="center">Evergreen</h1>
 
-[Get Evergreen on the Mac App Store](https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12) | [Learn more at Helton Labs](https://heltonlabs.com/evergreen)
+<p align="center">
+  <strong>The local-first personal CRM for macOS — with AI superpowers.</strong>
+</p>
 
-## What is Evergreen?
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">Download on the Mac App Store</a> &nbsp;|&nbsp;
+  <a href="https://heltonlabs.com/evergreen">Learn More</a>
+</p>
 
-[Evergreen](https://heltonlabs.com/evergreen) is a privacy-first personal CRM for macOS. All your data stays on your Mac in a single SQLite file — no cloud, no subscriptions, no telemetry. It includes a built-in MCP server that lets AI agents like Claude read and write your contacts, interactions, actions, and relationships directly.
+---
 
-Read about how Evergreen was built and what it can do:
+Your contacts, your Mac, your data. [Evergreen](https://heltonlabs.com/evergreen) is a blazing-fast personal CRM that keeps everything local — no cloud, no subscriptions, no telemetry. Just a beautiful native Mac app with a built-in AI agent interface that lets Claude manage your relationships alongside you.
 
-- [Vibe Coding a Personal CRM in Swift](https://mcginniscommawill.com/posts/2025-09-05-vibe-coding-personal-crm/) — the origin story
-- [Evergreen Gets Serious: Building Tools That Think With You](https://mcginniscommawill.com/posts/2025-10-08-evergreen-gets-serious/) — MCP integration, data model expansion
-- [Evergreen Gets Even Evergreener](https://mcginniscommawill.com/posts/2026-01-26-evergreen-gets-even-evergreener/) — network visualization, analytics, and more
+This repository contains **18 Claude Code skills** that turn Evergreen into an AI-powered relationship management system. Install them and Claude can capture contacts, draft follow-ups, prep you for meetings, scan your inbox, analyze your network, and more — all reading and writing directly to your local Evergreen database.
 
-## Installation
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/contacts.png" alt="Effortlessly Manage Contacts" width="800">
+  </a>
+</p>
 
-### Step 1: Add the Marketplace
+## Why Evergreen?
 
-First, add this repository as a plugin marketplace in Claude Code:
+Every CRM is designed for salespeople. Evergreen is designed for **you** — someone who wants to keep track of the people in their life without drowning in enterprise software.
+
+- **Local-first** — Your data lives in a single SQLite file on your Mac. No accounts, no cloud sync, no data leaving your machine.
+- **Keyboard-first** — Navigate thousands of contacts at the speed of thought. `⌘K` to search, `⌘N` to create, arrow keys to fly through your network.
+- **AI-native** — A built-in [MCP server](https://heltonlabs.com/evergreen) lets Claude (and other AI agents) read and write your contacts, interactions, actions, and relationships directly. Every agent action is attributed and logged.
+- **Buy once, own forever** — No subscriptions. No feature gates. No upsells.
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/network.png" alt="Visualize Your Connections" width="800">
+  </a>
+</p>
+
+## What You Get
+
+**Contacts & Relationships** — An information-dense contacts table with resizable columns, inline editing, stackable filters, and a detail pane with Markdown notes, interaction timelines, and relationship mapping. Powerful search tokens let you filter by tag, org, email domain, location, or interaction recency.
+
+**Network Visualization** — See how your contacts are connected to each other. Track who introduced whom, find bridge contacts between clusters, and identify your most valuable connectors.
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/dashboard.png" alt="Monitor Growth Progress" width="800">
+  </a>
+</p>
+
+**Dashboard & Analytics** — Contact growth charts, interaction trends, tag distribution, and a relationship heatmap. See which relationships are thriving and which need attention at a glance.
+
+**Actions & Follow-Ups** — Track next actions with due dates and priorities. Never forget a promised introduction, a follow-up email, or an important check-in.
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/actions.png" alt="Prioritize Action Items" width="800">
+  </a>
+</p>
+
+**Interaction History** — Log meetings, calls, emails, and DMs with full context. See your complete relationship timeline at a glance and never walk into a conversation unprepared.
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/interactions.png" alt="Log Meaningful Interactions" width="800">
+  </a>
+</p>
+
+**Lists** — Organize contacts into named lists for newsletters, update groups, event invites, or any custom grouping. Batch operations make it easy to log interactions or compose emails for entire lists.
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12">
+    <img src="images/lists.png" alt="Curate Essential Lists" width="800">
+  </a>
+</p>
+
+## AI-Powered CRM with Claude Code Skills
+
+These skills teach Claude how to work with your Evergreen database. Once installed, Claude automatically uses them when you ask about contacts, follow-ups, meetings, or your network.
+
+### Example Prompts
 
 ```
-/plugin marketplace add wdm0006/evergreen-skills
+"I just met these people at the conference — add them to Evergreen"
+"Who do I need to follow up with this week?"
+"Prep me for my call with Sarah Chen"
+"Process my meeting notes from today"
+"How healthy is my network right now?"
+"Draft a re-engagement email to Marcus"
+"Scan my inbox and update Evergreen with anything I missed"
+"Any news about my top contacts?"
 ```
 
-### Step 2: Install a Plugin Bundle
-
-Install the complete skill set (recommended):
-
-```
-/plugin install evergreen-complete@wdm0006-evergreen-skills
-```
-
-Or install specific bundles based on your needs:
-
-```
-# Core daily-driver skills
-/plugin install evergreen-essentials@wdm0006-evergreen-skills
-
-# Gmail integration skills
-/plugin install evergreen-email@wdm0006-evergreen-skills
-
-# Relationship nurturing skills
-/plugin install evergreen-networking@wdm0006-evergreen-skills
-
-# Monitoring and maintenance skills
-/plugin install evergreen-reporting@wdm0006-evergreen-skills
-```
-
-### Alternative: Local Installation
-
-For project-specific installation, clone this repository and copy the skills you need:
-
-```bash
-# Clone the repository
-git clone https://github.com/wdm0006/evergreen-skills.git
-
-# Copy skills to your project's .claude/skills/ directory
-mkdir -p .claude/skills
-cp -r evergreen-skills/skills/* .claude/skills/
-```
-
-Or for global installation (available in all projects):
-
-```bash
-# Copy to your personal Claude skills directory
-mkdir -p ~/.claude/skills
-cp -r evergreen-skills/skills/* ~/.claude/skills/
-```
-
-### Verifying Installation
-
-After installation, you can verify the skills are loaded by running:
-
-```
-/plugin list
-```
-
-> **Note:** Skills require Claude Code Pro, Max, Team, or Enterprise. Free tier users do not have access to Skills.
-
-## Prerequisites
-
-### Evergreen CRM
-
-[Download Evergreen from the Mac App Store](https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12) and make sure the MCP server is configured in your Claude settings:
-
-```json
-{
-  "mcpServers": {
-    "evergreen-crm": {
-      "command": "/Applications/Evergreen.app/Contents/MacOS/evergreen-mcp"
-    }
-  }
-}
-```
-
-### Gmail Integration (Optional)
-
-Some skills (inbox-scan, auto-log-interactions) work best with Gmail connected in Claude. If you have Gmail set up via Google Workspace MCP or Claude's built-in Gmail integration, those skills can scan your email and sync activity to Evergreen automatically.
-
-## Available Skills
+### Available Skills
 
 | Skill | Description | Gmail? |
 |-------|-------------|--------|
@@ -122,77 +118,82 @@ Some skills (inbox-scan, auto-log-interactions) work best with Gmail connected i
 | **[evergreen-life-event-tracker](skills/life-events/)** | Track and act on birthdays, job changes, milestones | |
 | **[evergreen-news-alerts](skills/news-alerts/)** | Monitor news about contacts and their companies | |
 
+## Installing the Skills
+
+### Via Claude Code Marketplace (Recommended)
+
+```
+/plugin marketplace add wdm0006/evergreen-skills
+```
+
+Then install the complete set or a specific bundle:
+
+```
+# Everything
+/plugin install evergreen-complete@wdm0006-evergreen-skills
+
+# Just the daily drivers
+/plugin install evergreen-essentials@wdm0006-evergreen-skills
+
+# Gmail integration skills
+/plugin install evergreen-email@wdm0006-evergreen-skills
+
+# Relationship nurturing skills
+/plugin install evergreen-networking@wdm0006-evergreen-skills
+
+# Monitoring and maintenance skills
+/plugin install evergreen-reporting@wdm0006-evergreen-skills
+```
+
+### Manual Installation
+
+```bash
+git clone https://github.com/wdm0006/evergreen-skills.git
+mkdir -p ~/.claude/skills
+cp -r evergreen-skills/skills/* ~/.claude/skills/
+```
+
+### Verify
+
+```
+/plugin list
+```
+
+> **Note:** Skills require Claude Code Pro, Max, Team, or Enterprise.
+
 ## Plugin Bundles
 
-### evergreen-complete
-All 18 skills for comprehensive CRM workflow automation with Evergreen.
+| Bundle | Skills | For |
+|--------|--------|-----|
+| **evergreen-complete** | All 18 | Everything |
+| **evergreen-essentials** | Contact capture, follow-up reminders, draft follow-up, context recall, meeting prep | Daily use |
+| **evergreen-email** | Inbox scan, auto-log interactions, draft follow-up, re-engagement | Gmail integration |
+| **evergreen-networking** | Event follow-up, warm intros, network analysis, relationship health, life events | Building relationships |
+| **evergreen-reporting** | Weekly report, stale data audit, relationship health, news alerts | Staying on top of things |
 
-### evergreen-essentials
-Core daily-driver skills:
-- Contact capture
-- Follow-up reminders
-- Draft follow-up messages
-- Context recall
-- Meeting prep
+## Setting Up Evergreen's MCP Server
 
-### evergreen-email
-Gmail integration skills:
-- Inbox scan for action items
-- Auto-log email interactions
-- Draft follow-up messages
-- Re-engagement outreach
+[Download Evergreen from the Mac App Store](https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12), then add the MCP server to your Claude settings:
 
-### evergreen-networking
-Relationship nurturing skills:
-- Event follow-up
-- Warm introductions
-- Network analysis
-- Relationship health
-- Life event tracking
-
-### evergreen-reporting
-Monitoring and maintenance skills:
-- Weekly relationship report
-- Stale data audit
-- Relationship health
-- News alerts
-
-## Usage
-
-Once installed, Claude will automatically use these skills when you ask about:
-
-- Adding contacts to your CRM
-- Following up with someone
-- Preparing for a meeting
-- Processing meeting notes
-- Checking on your network health
-- Scanning your inbox for missed items
-- Analyzing your contact network
-- And more...
-
-### Example Prompts
-
-```
-"I just met these people at the conference — add them to Evergreen"
-"Who do I need to follow up with this week?"
-"Prep me for my call with Sarah Chen"
-"Process my meeting notes from today"
-"How healthy is my network right now?"
-"Draft a re-engagement email to Marcus"
-"Any news about my top contacts?"
+```json
+{
+  "mcpServers": {
+    "evergreen-crm": {
+      "command": "/Applications/Evergreen.app/Contents/MacOS/evergreen-mcp"
+    }
+  }
+}
 ```
 
-## About Evergreen
+The MCP server runs locally — no network requests, no API keys, no setup beyond this one config line. Claude gets full read/write access to your contacts, interactions, actions, relationships, and activity log. Every agent action is attributed and fully auditable.
 
-[Evergreen](https://heltonlabs.com/evergreen) is built by [Helton Labs](https://heltonlabs.com/evergreen). It's a local-first, privacy-respecting personal CRM designed for people who value their relationships and their data.
+If you have **Gmail connected in Claude** (via Google Workspace MCP or Claude's built-in Gmail integration), the email skills can scan your inbox and sync activity to Evergreen automatically.
 
-- No cloud sync — your data stays on your Mac
-- No subscriptions — buy once, own forever
-- No telemetry — zero tracking, zero analytics
-- AI-native — built-in MCP server for Claude and other AI agents
-- Fast — handles thousands of contacts with a keyboard-first interface
+## Read More
 
-[Download Evergreen on the Mac App Store](https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12)
+- [Vibe Coding a Personal CRM in Swift](https://mcginniscommawill.com/posts/2025-09-05-vibe-coding-personal-crm/) — How Evergreen was built from scratch in 12 hours
+- [Evergreen Gets Serious: Building Tools That Think With You](https://mcginniscommawill.com/posts/2025-10-08-evergreen-gets-serious/) — MCP integration, keyboard shortcuts, and data model expansion
+- [Evergreen Gets Even Evergreener](https://mcginniscommawill.com/posts/2026-01-26-evergreen-gets-even-evergreener/) — Network visualization, analytics dashboard, and relationship mapping
 
 ## Contributing
 
@@ -201,3 +202,11 @@ Contributions are welcome! Please open an issue or PR on [GitHub](https://github
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+<p align="center">
+  <a href="https://apps.apple.com/us/app/evergreencrm/id6753191506?mt=12"><strong>Get Evergreen on the Mac App Store</strong></a>
+  <br>
+  Built by <a href="https://heltonlabs.com/evergreen">Helton Labs</a>
+</p>
