@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:mcginniscommawill.com)",
+      "WebFetch(domain:heltonlabs.com)"
+    ]
+  }
+}

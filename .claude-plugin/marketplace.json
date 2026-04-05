@@ -1,0 +1,91 @@
+{
+  "name": "evergreen-crm-skills",
+  "owner": {
+    "name": "Will McGinnis",
+    "email": "will@mcginniscommawill.com"
+  },
+  "metadata": {
+    "description": "Claude Code skills for personal CRM workflows with Evergreen — contact management, follow-ups, email integration, networking, and relationship nurturing",
+    "version": "1.0.0",
+    "homepage": "https://github.com/wdm0006/evergreen-skills",
+    "keywords": ["crm", "contacts", "networking", "relationships", "follow-up", "email", "gmail", "evergreen", "mcp"]
+  },
+  "plugins": [
+    {
+      "name": "evergreen-complete",
+      "description": "All 18 Evergreen CRM skills — contact management, follow-ups, email integration, networking, and reporting",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/contact-capture",
+        "./skills/contact-enrichment",
+        "./skills/follow-up-reminders",
+        "./skills/draft-follow-up",
+        "./skills/re-engagement",
+        "./skills/warm-introduction",
+        "./skills/inbox-scan",
+        "./skills/auto-log-interactions",
+        "./skills/meeting-prep",
+        "./skills/post-meeting-notes",
+        "./skills/event-follow-up",
+        "./skills/context-recall",
+        "./skills/relationship-health",
+        "./skills/network-analysis",
+        "./skills/weekly-report",
+        "./skills/stale-data-audit",
+        "./skills/life-events",
+        "./skills/news-alerts"
+      ]
+    },
+    {
+      "name": "evergreen-essentials",
+      "description": "Core daily-driver skills — contact capture, follow-ups, meeting prep, and context recall",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/contact-capture",
+        "./skills/follow-up-reminders",
+        "./skills/draft-follow-up",
+        "./skills/context-recall",
+        "./skills/meeting-prep"
+      ]
+    },
+    {
+      "name": "evergreen-email",
+      "description": "Gmail integration skills — inbox scanning, auto-logging interactions, follow-ups, and re-engagement",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/inbox-scan",
+        "./skills/auto-log-interactions",
+        "./skills/draft-follow-up",
+        "./skills/re-engagement"
+      ]
+    },
+    {
+      "name": "evergreen-networking",
+      "description": "Relationship nurturing skills — event follow-ups, introductions, network analysis, and life events",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/event-follow-up",
+        "./skills/warm-introduction",
+        "./skills/network-analysis",
+        "./skills/relationship-health",
+        "./skills/life-events"
+      ]
+    },
+    {
+      "name": "evergreen-reporting",
+      "description": "Monitoring and maintenance skills — weekly reports, stale data audits, and news alerts",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/weekly-report",
+        "./skills/stale-data-audit",
+        "./skills/relationship-health",
+        "./skills/news-alerts"
+      ]
+    }
+  ]
+}
