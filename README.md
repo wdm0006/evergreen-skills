@@ -199,6 +199,18 @@ If you have **Gmail connected in Claude** (via Google Workspace MCP or Claude's 
 
 Contributions are welcome! Please open an issue or PR on [GitHub](https://github.com/wdm0006/evergreen-skills).
 
+A GitHub Actions workflow validates skill structure and `marketplace.json`
+integrity on every push and pull request. To run the same checks locally:
+
+```bash
+python3 scripts/validate_skills.py
+```
+
+It verifies that every skill referenced by the manifest exists with a
+`SKILL.md`, that each `SKILL.md` has valid frontmatter with a `name` and
+`description`, and that no two skills share a `name`. No dependencies are
+required (PyYAML is used if installed).
+
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
