@@ -18,9 +18,9 @@ description: Researches and enriches Evergreen CRM contacts with publicly availa
 
 1. Retrieve the contact with `get_contact` to see what's already known
 2. Use web search to find publicly available information (LinkedIn profile, company website, recent news)
-3. Update the contact with `contacts.update` to fill in missing fields
-4. Append research findings to notes with `notes.append`
-5. Add or update tags with `tags.add_to_contact` based on what you learn
+3. Update the contact with `update_contact` to fill in missing fields
+4. Append research findings to the contact's `notes` field with `update_contact`
+5. Add or update the contact's `tags` with `update_contact` based on what you learn
 
 ## Fields to Enrich
 
@@ -46,13 +46,13 @@ Email: jamie@acmelabs.io
 ```
 1. get_contact(id) → sparse record
 2. Web search "Jamie Rodriguez acmelabs.io"
-3. contacts.update(id, {
+3. update_contact(id, {
      title: "VP of Engineering",
      organization: "Acme Labs",
      location: "San Francisco, CA"
    })
-4. notes.append(id, "## Research (2026-04-05)\n- VP Eng at Acme Labs (Series B, 50 employees)\n- Previously at Stripe (2019-2024)\n- Speaks at PyCon regularly\n- Interested in developer tools and open source")
-5. tags.add_to_contact(id, ["engineering", "startup", "developer-tools"])
+4. update_contact(id, { notes: "## Research (2026-04-05)\n- VP Eng at Acme Labs (Series B, 50 employees)\n- Previously at Stripe (2019-2024)\n- Speaks at PyCon regularly\n- Interested in developer tools and open source" })
+5. update_contact(id, { tags: ["engineering", "startup", "developer-tools"] })
 ```
 
 ## Checklist

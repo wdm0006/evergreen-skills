@@ -23,9 +23,9 @@ description: Parses recent Gmail activity and logs interaction summaries to Ever
 
 1. Fetch recent sent and received emails from Gmail for the target period
 2. Group emails by contact/thread
-3. Match email addresses to Evergreen contacts using `search_contacts` with `email:` token
+3. Match email addresses to Evergreen contacts using `search_contacts` (pass the address as the `query`)
 4. For each matched contact, summarize the email thread (topic, outcome, next steps)
-5. Log the interaction with `interactions.log` (type: "email")
+5. Log the interaction with `log_interaction` (type: "email")
 6. Skip contacts that already have a more recent interaction logged
 
 ## Privacy-First Approach
@@ -49,22 +49,22 @@ description: Parses recent Gmail activity and logs interaction summaries to Ever
 
 **Logged to Evergreen:**
 ```
-1. search_contacts("email:sarah@meridianhealth.com") → Sarah Chen
-   interactions.log(sarah_id, {
+1. search_contacts({ query: "sarah@meridianhealth.com" }) → Sarah Chen
+   log_interaction(sarah_id, {
      type: "email",
      summary: "Discussed API integration timeline — agreed on Q3 target, Sarah reviewing docs",
      date: "2026-04-03"
    })
 
-2. search_contacts("email:marcus@dataflow.io") → Marcus Webb
-   interactions.log(marcus_id, {
+2. search_contacts({ query: "marcus@dataflow.io" }) → Marcus Webb
+   log_interaction(marcus_id, {
      type: "email",
      summary: "Sent partnership proposal for data pipeline collaboration",
      date: "2026-04-01"
    })
 
-3. search_contacts("email:jamie@acmelabs.io") → Jamie Rodriguez
-   interactions.log(jamie_id, {
+3. search_contacts({ query: "jamie@acmelabs.io" }) → Jamie Rodriguez
+   log_interaction(jamie_id, {
      type: "email",
      summary: "Planning conference panel on AI in healthcare — confirmed topic and date",
      date: "2026-04-04"

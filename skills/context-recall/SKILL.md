@@ -17,8 +17,8 @@ description: Generates a narrative summary of everything known about a contact i
 ## How It Works
 
 1. Look up the contact with `get_contact` for full profile
-2. Pull all interactions with `interactions.list` for complete history
-3. Check pending actions with `actions.list`
+2. Pull all interactions with `get_contact_interactions` for complete history
+3. Check pending actions with `list_actions`
 4. Map their network with `get_contact_network` for relationships and introductions
 5. Check introduction chains with `get_introduction_chain`
 6. Compile into a narrative summary

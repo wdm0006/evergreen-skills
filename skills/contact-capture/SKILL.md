@@ -18,10 +18,10 @@ description: Parses unstructured text (email signatures, business cards, LinkedI
 
 1. Parse the unstructured text to extract: name, title, organization, email, phone, location, and any contextual notes
 2. Search existing contacts with `search_contacts` to check for duplicates
-3. If the contact doesn't exist, create it with `contacts.create`
-4. Add relevant tags with `tags.add_to_contact` (e.g., "met-at-conference", "investor", "lead")
-5. Append context notes with `notes.append` (how you met, who introduced you, conversation topics)
-6. If an introduction, log the interaction with `interactions.log`
+3. If the contact doesn't exist, create it with `create_contact`
+4. Add relevant tags via the contact's `tags` field with `update_contact` (e.g., "met-at-conference", "investor", "lead")
+5. Record context in the contact's `notes` field with `update_contact` (how you met, who introduced you, conversation topics)
+6. If an introduction, log the interaction with `log_interaction`
 
 ## Extraction Patterns
 
@@ -44,8 +44,8 @@ and she's really interested in our API work.
 
 **Actions:**
 ```
-1. search_contacts("Sarah Chen") → no match
-2. contacts.create({
+1. search_contacts({ query: "Sarah Chen" }) → no match
+2. create_contact({
      first_name: "Sarah",
      last_name: "Chen",
      title: "CTO",
@@ -53,9 +53,9 @@ and she's really interested in our API work.
      email: "sarah@meridianhealth.com",
      location: "Atlanta"
    })
-3. tags.add_to_contact(contact_id, ["ai", "healthcare", "atlanta"])
-4. notes.append(contact_id, "Met at Atlanta AI Dinner. Interested in our API work.")
-5. interactions.log(contact_id, type: "meeting", summary: "Met at Atlanta AI Dinner — discussed API work")
+3. update_contact(contact_id, { tags: ["ai", "healthcare", "atlanta"] })
+4. update_contact(contact_id, { notes: "Met at Atlanta AI Dinner. Interested in our API work." })
+5. log_interaction(contact_id, type: "meeting", summary: "Met at Atlanta AI Dinner — discussed API work")
 ```
 
 ## Checklist

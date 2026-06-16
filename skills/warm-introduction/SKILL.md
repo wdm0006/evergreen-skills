@@ -17,12 +17,12 @@ description: Drafts double-opt-in introduction emails connecting two Evergreen C
 ## How It Works
 
 1. Retrieve both contacts with `get_contact` for full profiles
-2. Pull interaction history for both with `interactions.list`
+2. Pull interaction history for both with `get_contact_interactions`
 3. Check if they're already connected with `get_contact_network`
 4. Draft a double-opt-in permission email (ask each party first)
 5. Draft the actual introduction email
-6. Log the interaction for both contacts with `interactions.log`
-7. Create relationships with `relationships.create` (type: "introduced_by")
+6. Log the interaction for both contacts with `log_interaction`
+7. Create relationships with `create_relationship` (type: "introduced_by")
 
 ## Double-Opt-In Process
 
@@ -61,9 +61,9 @@ I'll let you two take it from here!
 **Step 3: Log in Evergreen**
 
 ```
-1. interactions.log(sarah_id, type: "email", summary: "Introduced to Marcus Webb (DataFlow) — data pipeline overlap")
-2. interactions.log(marcus_id, type: "email", summary: "Introduced to Sarah Chen (Meridian Health) — data pipeline overlap")
-3. relationships.create({
+1. log_interaction(sarah_id, type: "email", summary: "Introduced to Marcus Webb (DataFlow) — data pipeline overlap")
+2. log_interaction(marcus_id, type: "email", summary: "Introduced to Sarah Chen (Meridian Health) — data pipeline overlap")
+3. create_relationship({
      contact_id: sarah_id,
      related_contact_id: marcus_id,
      type: "introduced_by",

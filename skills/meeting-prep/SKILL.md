@@ -17,8 +17,8 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 ## How It Works
 
 1. Look up the contact(s) with `get_contact` for full profile
-2. Pull recent interactions with `interactions.list` (last 5-10)
-3. Check pending actions with `actions.list` for open commitments
+2. Pull recent interactions with `get_contact_interactions` (last 5-10)
+3. Check pending actions with `list_actions` for open commitments
 4. Map their network with `get_contact_network` for shared connections
 5. Compile a briefing with talking points and reminders
 

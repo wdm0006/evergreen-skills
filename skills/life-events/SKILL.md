@@ -18,10 +18,10 @@ description: Tracks and acts on life events and milestones for Evergreen CRM con
 
 1. Search contacts for known milestones with `search_contacts` and `get_contact`
 2. Review notes for date-related context (birthdays, anniversaries mentioned)
-3. Create reminder actions with `actions.create` for upcoming events
+3. Create reminder actions with `create_action` for upcoming events
 4. Draft congratulatory or celebratory messages
-5. Log the outreach as an interaction with `interactions.log`
-6. Update notes with `notes.append` when you learn new milestones
+5. Log the outreach as an interaction with `log_interaction`
+6. Update the contact's `notes` with `update_contact` when you learn new milestones
 
 ## Milestone Types
 
@@ -40,13 +40,13 @@ description: Tracks and acts on life events and milestones for Evergreen CRM con
 When you learn about a milestone, record it in notes with a consistent format:
 
 ```
-notes.append(contact_id, "## Milestones\n- Birthday: March 15\n- Started at Meridian: Jan 2024\n- DataFlow Series A: Oct 2025")
+update_contact(contact_id, { notes: "## Milestones\n- Birthday: March 15\n- Started at Meridian: Jan 2024\n- DataFlow Series A: Oct 2025" })
 ```
 
 Create recurring actions for annual events:
 
 ```
-actions.create({
+create_action({
   contact_id: id,
   title: "Birthday — send a note to Sarah Chen",
   due_date: "2027-03-15",

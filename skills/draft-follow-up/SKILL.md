@@ -17,12 +17,12 @@ description: Drafts personalized follow-up emails and messages based on Evergree
 ## How It Works
 
 1. Retrieve the contact with `get_contact` for full profile
-2. Pull recent interactions with `interactions.list` for conversation history
-3. Check pending actions with `actions.list` for any commitments
+2. Pull recent interactions with `get_contact_interactions` for conversation history
+3. Check pending actions with `list_actions` for any commitments
 4. Review the contact's network with `get_contact_network` for shared connections context
 5. Draft a message that references specific shared history and feels personal
-6. After sending, log the interaction with `interactions.log`
-7. Mark any related actions complete with `actions.complete`
+6. After sending, log the interaction with `log_interaction`
+7. Mark any related actions complete with `mark_action_completed`
 
 ## Message Types
 
@@ -70,8 +70,8 @@ Best,
 
 **Post-send:**
 ```
-1. interactions.log(contact_id, type: "email", summary: "Sent API docs follow-up, offered call to discuss")
-2. actions.complete(action_id)  // "Send API documentation"
+1. log_interaction(contact_id, type: "email", summary: "Sent API docs follow-up, offered call to discuss")
+2. mark_action_completed(action_id)  // "Send API documentation"
 ```
 
 ## Writing Principles
