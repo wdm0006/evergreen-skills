@@ -18,12 +18,12 @@ description: Batch-processes contacts from a conference, dinner, or networking e
 
 1. Parse the attendee list or notes to extract contact details
 2. For each person, check for duplicates with `search_contacts`
-3. Create new contacts with `contacts.create`
-4. Tag all contacts with the event name using `tags.add_to_contact`
-5. Log the initial meeting as an interaction with `interactions.log`
-6. Append conversation context to notes with `notes.append`
+3. Create new contacts with `create_contact`
+4. Tag all contacts with the event name via the `tags` field on `update_contact`
+5. Log the initial meeting as an interaction with `log_interaction`
+6. Add conversation context to the contact's `notes` with `update_contact`
 7. Draft personalized follow-up messages for each contact
-8. Create follow-up actions with `actions.create`
+8. Create follow-up actions with `create_action`
 
 ## Event Tag Convention
 
@@ -57,15 +57,15 @@ Met at Atlanta AI Dinner, April 3, 2026:
 **Batch processing:**
 ```
 For each contact:
-1. search_contacts("[name]") → check for duplicates
-2. contacts.create({ ... })
-3. tags.add_to_contact(id, ["event-ai-dinner-2026", "atlanta", "ai"])
-4. interactions.log(id, {
+1. search_contacts({ query: "[name]" }) → check for duplicates
+2. create_contact({ ... })
+3. update_contact(id, { tags: ["event-ai-dinner-2026", "atlanta", "ai"] })
+4. log_interaction(id, {
      type: "meeting",
      summary: "Met at Atlanta AI Dinner — [conversation topic]"
    })
-5. notes.append(id, "[conversation details]")
-6. actions.create({
+5. update_contact(id, { notes: "[conversation details]" })
+6. create_action({
      contact_id: id,
      title: "Send follow-up email to [name]",
      due_date: "2026-04-05",

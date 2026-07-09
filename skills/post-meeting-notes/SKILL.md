@@ -18,11 +18,11 @@ description: Processes raw meeting notes into structured Evergreen CRM records â
 
 1. Parse the raw notes to identify: attendees, topics discussed, decisions made, action items, and new contacts mentioned
 2. Match attendees to existing contacts with `search_contacts`
-3. Log the interaction for each attendee with `interactions.log`
-4. Create action items with `actions.create` for any commitments
-5. For new people mentioned, create contacts with `contacts.create`
-6. Append detailed notes with `notes.append` for relevant contacts
-7. Create relationships with `relationships.create` if new connections were established
+3. Log the interaction for each attendee with `log_interaction`
+4. Create action items with `create_action` for any commitments
+5. For new people mentioned, create contacts with `create_contact`
+6. Append detailed notes to the contact's `notes` field with `update_contact` for relevant contacts
+7. Create relationships with `create_relationship` if new connections were established
 
 ## Extraction Targets
 
@@ -31,10 +31,10 @@ description: Processes raw meeting notes into structured Evergreen CRM records â
 | Attendees | Names, titles, companies | Match or create contacts |
 | Topics | Key subjects discussed | Include in interaction summary |
 | Decisions | Agreed-upon outcomes | Note in interaction + notes |
-| Action items | "I'll...", "You should...", "Let's..." | `actions.create` with due dates |
-| New contacts | "You should talk to..." | `contacts.create` + flag for follow-up |
-| Relationships | "Sarah works with Marcus on..." | `relationships.create` |
-| Follow-ups | Next meeting, deadlines | `actions.create` with dates |
+| Action items | "I'll...", "You should...", "Let's..." | `create_action` with due dates |
+| New contacts | "You should talk to..." | `create_contact` + flag for follow-up |
+| Relationships | "Sarah works with Marcus on..." | `create_relationship` |
+| Follow-ups | Next meeting, deadlines | `create_action` with dates |
 
 ## Example
 
@@ -57,37 +57,37 @@ We agreed to:
 
 **Processed into Evergreen:**
 ```
-1. interactions.log(sarah_id, {
+1. log_interaction(sarah_id, {
      type: "call",
      summary: "Discussed API integration â€” Q3 pilot start. Lisa handling procurement. New tech contact Raj Patel joining."
    })
 
-2. interactions.log(lisa_id, {
+2. log_interaction(lisa_id, {
      type: "call",
      summary: "Procurement discussion for API integration. Needs security questionnaire by end of April."
    })
 
-3. actions.create({
+3. create_action({
      contact_id: lisa_id,
      title: "Send security questionnaire to Lisa Park",
      due_date: "2026-04-15",
      priority: "high"
    })
 
-4. actions.create({
+4. create_action({
      contact_id: sarah_id,
      title: "Schedule technical deep-dive with Raj Patel (after intro)",
      priority: "medium"
    })
 
-5. actions.create({
+5. create_action({
      contact_id: sarah_id,
      title: "Follow up if Sarah hasn't sent data schema doc by Apr 12",
      due_date: "2026-04-12",
      priority: "medium"
    })
 
-6. notes.append(sarah_id, "Apr 5 call: Q3 pilot confirmed. New tech contact: Raj Patel (data engineer). Lisa handling procurement.")
+6. update_contact(sarah_id, { notes: "Apr 5 call: Q3 pilot confirmed. New tech contact: Raj Patel (data engineer). Lisa handling procurement." })
 ```
 
 ## Checklist

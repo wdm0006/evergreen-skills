@@ -19,9 +19,9 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 1. Pull target contacts with `search_contacts` (filter by tags like "investor", "founder", or specific orgs)
 2. Get full details with `get_contact` for name, organization, and context
 3. Web search for recent news about the contact and their company
-4. For notable findings, append to notes with `notes.append`
-5. Create outreach actions with `actions.create` for timely conversation starters
-6. Log any outreach as interactions with `interactions.log`
+4. For notable findings, append to the contact's `notes` with `update_contact`
+5. Create outreach actions with `create_action` for timely conversation starters
+6. Log any outreach as interactions with `log_interaction`
 
 ## What to Monitor
 
@@ -46,18 +46,18 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 
 1. **DataFlow** (Marcus Webb's company)
    "DataFlow raises $12M Series A led by Sequoia"
-   → notes.append(marcus_id, "Apr 2026: DataFlow raised $12M Series A (Sequoia)")
-   → actions.create({ title: "Congratulate Marcus on Series A", priority: "high" })
+   → update_contact(marcus_id, { notes: "Apr 2026: DataFlow raised $12M Series A (Sequoia)" })
+   → create_action({ title: "Congratulate Marcus on Series A", priority: "high" })
 
 2. **Sarah Chen** (Meridian Health)
    Published a blog post: "How We Rebuilt Our Data Pipeline in 6 Months"
-   → notes.append(sarah_id, "Apr 2026: Published blog on data pipeline rebuild")
+   → update_contact(sarah_id, { notes: "Apr 2026: Published blog on data pipeline rebuild" })
    → Good reference for your next conversation
 
 3. **Jamie Rodriguez** (Acme Labs)
    LinkedIn shows new title: "VP of Engineering" (was Senior Engineer)
-   → contacts.update(jamie_id, { title: "VP of Engineering" })
-   → actions.create({ title: "Congratulate Jamie on VP promotion", priority: "medium" })
+   → update_contact(jamie_id, { title: "VP of Engineering" })
+   → create_action({ title: "Congratulate Jamie on VP promotion", priority: "medium" })
 
 ### No News Found
 - Tom Bradley, Lisa Park, David Kim, Priya Sharma (4 contacts)

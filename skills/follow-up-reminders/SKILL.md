@@ -16,8 +16,8 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 
 ## How It Works
 
-1. Pull overdue and pending actions with `actions.list` (filter by status: pending)
-2. Search for contacts with stale interactions using `search_contacts` with the `touched:` token
+1. Pull overdue and pending actions with `list_actions` (filter by status: pending)
+2. Identify contacts with stale interactions by listing them with `search_contacts` and comparing each contact's last-interaction date against your cadence thresholds
 3. Cross-reference with relationship context using `get_contact` for high-priority contacts
 4. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups
 5. Present a ranked list with context for each follow-up
@@ -52,12 +52,14 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 
 ## Suggested Cadences
 
-| Relationship Type | Cadence | Token Filter |
-|-------------------|---------|-------------|
-| Close collaborators | Every 2 weeks | `touched:>14d` |
-| Active network | Monthly | `touched:>30d` |
-| Extended network | Quarterly | `touched:>90d` |
-| Dormant (re-engage?) | 6+ months | `touched:>180d` |
+| Relationship Type | Cadence | Flag When Last Interaction Exceeds |
+|-------------------|---------|------------------------------------|
+| Close collaborators | Every 2 weeks | 14 days |
+| Active network | Monthly | 30 days |
+| Extended network | Quarterly | 90 days |
+| Dormant (re-engage?) | 6+ months | 180 days |
+
+`search_contacts` has no time-based filter, so compare each contact's last-interaction date against these thresholds yourself.
 
 ## Checklist
 

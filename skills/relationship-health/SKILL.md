@@ -17,7 +17,7 @@ description: Scores and surfaces relationship health across your Evergreen CRM c
 ## How It Works
 
 1. Pull all contacts and recent interactions with `search_contacts`
-2. For high-value contacts, get full details with `get_contact` and `interactions.list`
+2. For high-value contacts, get full details with `get_contact` and `get_contact_interactions`
 3. Analyze the global network with `get_global_network` for relationship patterns
 4. Score each relationship on recency, frequency, and depth
 5. Categorize into health tiers and surface actionable insights

@@ -16,12 +16,12 @@ description: Identifies dormant contacts in Evergreen CRM and drafts natural re-
 
 ## How It Works
 
-1. Search for dormant contacts with `search_contacts` using `touched:>90d` or `touched:>180d`
-2. For each candidate, pull full context with `get_contact` and `interactions.list`
+1. List contacts with `search_contacts`, then identify dormant ones by their last-interaction date (e.g., older than 90 or 180 days)
+2. For each candidate, pull full context with `get_contact` and `get_contact_interactions`
 3. Check their network connections with `get_contact_network` for warm re-entry points
 4. Research recent activity (job changes, company news) for a natural conversation hook
 5. Draft a low-pressure re-engagement message
-6. Create a follow-up action with `actions.create` to track the outreach
+6. Create a follow-up action with `create_action` to track the outreach
 
 ## Re-Engagement Hooks
 
@@ -62,7 +62,7 @@ Coffee sometime in the next couple weeks?
 
 **Post-draft:**
 ```
-actions.create(contact_id, {
+create_action(contact_id, {
   title: "Follow up if Marcus doesn't reply by Apr 19",
   due_date: "2026-04-19",
   priority: "low"

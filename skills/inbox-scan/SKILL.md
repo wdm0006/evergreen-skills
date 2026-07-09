@@ -23,8 +23,8 @@ description: Scans Gmail for actionable items and maps them to Evergreen CRM con
 
 1. Search Gmail for recent emails (sent and received) from the target time period
 2. For each email thread, identify: unanswered questions, promised deliverables, meeting requests, and introduction requests
-3. Match email addresses to Evergreen contacts using `search_contacts` with `email:` token
-4. For known contacts: create actions with `actions.create` for anything that needs follow-through
+3. Match email addresses to Evergreen contacts using `search_contacts` (pass the address as the `query`)
+4. For known contacts: create actions with `create_action` for anything that needs follow-through
 5. For unknown senders worth tracking: flag for potential contact creation
 6. Summarize findings in a structured report
 
