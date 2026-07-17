@@ -22,7 +22,7 @@ description: Drafts double-opt-in introduction emails connecting two Evergreen C
 4. Draft a double-opt-in permission email (ask each party first)
 5. Draft the actual introduction email
 6. Log the interaction for both contacts with `log_interaction`
-7. Create relationships with `create_relationship` (type: "introduced_by")
+7. Record the connection with `create_relationship` (relationshipType: "custom", customLabel: "introduced by me")
 
 ## Double-Opt-In Process
 
@@ -64,9 +64,10 @@ I'll let you two take it from here!
 1. log_interaction(sarah_id, type: "email", summary: "Introduced to Marcus Webb (DataFlow) — data pipeline overlap")
 2. log_interaction(marcus_id, type: "email", summary: "Introduced to Sarah Chen (Meridian Health) — data pipeline overlap")
 3. create_relationship({
-     contact_id: sarah_id,
-     related_contact_id: marcus_id,
-     type: "introduced_by",
+     fromContactId: sarah_id,
+     toContactId: marcus_id,
+     relationshipType: "custom",
+     customLabel: "introduced by me",
      notes: "Connected re: data infrastructure — Apr 2026"
    })
 ```
