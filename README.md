@@ -179,7 +179,7 @@ cp -r evergreen-skills/skills/* ~/.claude/skills/
 {
   "mcpServers": {
     "evergreen-crm": {
-      "command": "/Applications/Evergreen.app/Contents/MacOS/evergreen-mcp"
+      "command": "/Applications/EvergreenCRM.app/Contents/MacOS/evergreen-mcp.app/Contents/MacOS/evergreen-mcp"
     }
   }
 }
