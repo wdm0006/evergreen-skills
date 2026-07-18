@@ -21,9 +21,10 @@ description: Batch-processes contacts from a conference, dinner, or networking e
 3. Create new contacts with `create_contact`
 4. Tag all contacts with the event name via the `tags` field on `update_contact`
 5. Log the initial meeting as an interaction with `log_interaction`
-6. Add conversation context to the contact's `notes` with `update_contact`
-7. Draft personalized follow-up messages for each contact
-8. Create follow-up actions with `create_action`
+6. Add conversation context to the contact's `notes` with `update_contact` (include who introduced you when the notes name an introducer)
+7. If the notes say a specific person introduced you to this contact, resolve that introducer with `search_contacts`. If they're already in the CRM, call `record_introduction(introducerId, newContactId, notes?)` to record the `introducedBy` edge. If the introducer isn't a known contact, skip the call and keep the note from step 6.
+8. Draft personalized follow-up messages for each contact
+9. Create follow-up actions with `create_action`
 
 ## Event Tag Convention
 
@@ -71,6 +72,11 @@ For each contact:
      due_date: "2026-04-05",
      priority: "medium"
    })
+
+For Priya Sharma, the notes say "Introduced by David Kim" — record that edge:
+7. search_contacts({ query: "David Kim" }) → matches contact david_id
+8. record_introduction(introducerId: david_id, newContactId: priya_id, notes: "Introduced Priya at the Atlanta AI Dinner")
+   (If David Kim isn't already a contact, skip this and keep "Introduced by David Kim" in Priya's notes.)
 ```
 
 **Sample follow-up for Sarah:**
@@ -108,6 +114,7 @@ Event Follow-Up:
 - [ ] Event tag applied consistently
 - [ ] Initial interaction logged with conversation context
 - [ ] Notes capture what you discussed (not just who they are)
+- [ ] Introducer edge recorded with `record_introduction` for anyone the notes say was introduced by a known contact
 - [ ] Follow-up messages personalized per conversation
 - [ ] Follow-up actions created with appropriate deadlines
 ```
