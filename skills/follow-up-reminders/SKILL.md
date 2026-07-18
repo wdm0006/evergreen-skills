@@ -16,7 +16,7 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 
 ## How It Works
 
-1. Pull overdue and pending actions with `list_actions` (filter by status: pending)
+1. Pull overdue actions with `get_overdue_actions` and actions approaching their due dates with `get_actions_due_soon`
 2. Identify contacts with stale interactions by listing them with `search_contacts` and comparing each contact's last-interaction date against your cadence thresholds
 3. Cross-reference with relationship context using `get_contact` for high-priority contacts
 4. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups
