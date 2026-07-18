@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate skill structure and marketplace.json integrity.
+"""Validate skill structure and README/marketplace.json integrity.
 
 Checks that:
   * every skill path referenced by .claude-plugin/marketplace.json points to a
@@ -7,6 +7,9 @@ Checks that:
   * every skills/*/SKILL.md has parseable YAML frontmatter with non-empty
     `name` and `description` fields;
   * no two skills share the same frontmatter `name`;
+  * README plugin install commands reference the manifest's marketplace name
+    and defined plugin bundles;
+  * the README marketplace-add repository slug matches the marketplace name;
   * (warning only) every skills/* directory is referenced by at least one bundle.
 
 Exits non-zero if any error is found. Run locally with:
@@ -20,12 +23,17 @@ otherwise a minimal parser handles the flat `key: value` frontmatter.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 MARKETPLACE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
 SKILLS_DIR = REPO_ROOT / "skills"
+README = REPO_ROOT / "README.md"
+
+INSTALL_COMMAND = re.compile(r"^\s*/plugin install ([^@\s]+)@([^\s]+)\s*$")
+MARKETPLACE_ADD_COMMAND = re.compile(r"^\s*/plugin marketplace add ([^/\s]+)/([^/\s]+)\s*$")
 
 try:
     import yaml  # type: ignore
@@ -63,6 +71,51 @@ def read_frontmatter(skill_md: Path) -> dict:
     return parse_frontmatter(parts[1])
 
 
+def validate_readme_commands(manifest: dict, errors: list[str], warnings: list[str]) -> None:
+    """Check documented plugin commands against the marketplace manifest."""
+    try:
+        lines = README.read_text(encoding="utf-8").splitlines()
+    except OSError as exc:
+        warnings.append(f"cannot read README.md; plugin commands were not checked: {exc}")
+        return
+
+    marketplace_name = manifest.get("name")
+    bundle_names = {plugin.get("name") for plugin in manifest.get("plugins", [])}
+    install_commands = 0
+    marketplace_add_commands = 0
+
+    for line_number, line in enumerate(lines, start=1):
+        install_match = INSTALL_COMMAND.match(line)
+        if install_match:
+            install_commands += 1
+            bundle, documented_marketplace = install_match.groups()
+            if documented_marketplace != marketplace_name:
+                errors.append(
+                    f"README.md:{line_number}: install command uses marketplace "
+                    f"'{documented_marketplace}', expected '{marketplace_name}'"
+                )
+            if bundle not in bundle_names:
+                errors.append(
+                    f"README.md:{line_number}: install command references unknown "
+                    f"bundle '{bundle}'"
+                )
+
+        marketplace_add_match = MARKETPLACE_ADD_COMMAND.match(line)
+        if marketplace_add_match:
+            marketplace_add_commands += 1
+            documented_slug = "-".join(marketplace_add_match.groups())
+            if documented_slug != marketplace_name:
+                errors.append(
+                    f"README.md:{line_number}: marketplace add command resolves to "
+                    f"slug '{documented_slug}', expected '{marketplace_name}'"
+                )
+
+    if not install_commands:
+        warnings.append("README.md contains no /plugin install commands")
+    if not marketplace_add_commands:
+        warnings.append("README.md contains no /plugin marketplace add commands")
+
+
 def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
@@ -89,6 +142,9 @@ def main() -> int:
                 errors.append(
                     f"bundle '{bundle}' references '{skill_path}' but it has no SKILL.md"
                 )
+
+    # --- Validate README plugin commands ---------------------------------
+    validate_readme_commands(manifest, errors, warnings)
 
     # --- Validate every skill's frontmatter -------------------------------
     names: dict[str, str] = {}
