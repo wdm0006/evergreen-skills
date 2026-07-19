@@ -18,9 +18,10 @@ description: Generates a weekly relationship management digest from Evergreen CR
 
 1. Pull recent activity with `get_activity_log` for the past week
 2. List interactions logged with `get_contact_interactions` for the period
-3. Check actions with `list_actions` — completed, overdue, and upcoming
-4. Search for new contacts added with `search_contacts`
-5. Compile into a structured weekly digest
+3. Check completed actions with `list_actions`
+4. Check overdue actions with `get_overdue_actions` and upcoming actions with `get_actions_due_soon`
+5. Search for new contacts added with `search_contacts`
+6. Compile into a structured weekly digest
 
 ## Report Format
 
