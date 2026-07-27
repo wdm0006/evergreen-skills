@@ -10,6 +10,9 @@ Checks that:
   * README plugin install commands reference the manifest's marketplace name
     and defined plugin bundles;
   * the README marketplace-add repository slug matches the marketplace name;
+  * no SKILL.md reintroduces a retired tool-name or query-token pattern that was
+    verified against the Evergreen MCP server to match nothing (denylist only —
+    there is no allowlist of valid tool names here);
   * (warning only) every skills/* directory is referenced by at least one bundle.
 
 Exits non-zero if any error is found. Run locally with:
@@ -34,6 +37,35 @@ README = REPO_ROOT / "README.md"
 
 INSTALL_COMMAND = re.compile(r"^\s*/plugin install ([^@\s]+)@([^\s]+)\s*$")
 MARKETPLACE_ADD_COMMAND = re.compile(r"^\s*/plugin marketplace add ([^/\s]+)/([^/\s]+)\s*$")
+
+# Dot-notation tool calls that were removed from the skills because they match no
+# tool the Evergreen MCP server registers. Listed as exact retired method names
+# rather than a generic `word.word` pattern so ordinary prose is never flagged.
+RETIRED_TOOL_CALLS = (
+    "contacts.create",
+    "contacts.update",
+    "interactions.log",
+    "interactions.list",
+    "actions.create",
+    "actions.list",
+    "actions.complete",
+    "relationships.create",
+    "notes.append",
+    "tags.add_to_contact",
+)
+
+RETIRED_PATTERNS = (
+    (
+        re.compile(r"\b(?:%s)\b" % "|".join(re.escape(call) for call in RETIRED_TOOL_CALLS)),
+        "retired dot-notation tool name; use the snake_case evergreen-mcp tool "
+        "(notes and tags are contact fields set via create_contact/update_contact)",
+    ),
+    (
+        re.compile(r"\btouched:"),
+        "retired search_contacts query token; search_contacts has no time-threshold "
+        "filter, so recency must be computed from returned last-interaction dates",
+    ),
+)
 
 try:
     import yaml  # type: ignore
@@ -69,6 +101,75 @@ def read_frontmatter(skill_md: Path) -> dict:
     if len(parts) < 3:
         raise ValueError("frontmatter block is not closed with '---'")
     return parse_frontmatter(parts[1])
+
+
+def scan_retired_patterns(text: str, label: str) -> list[str]:
+    """Return an error per line of `text` that reintroduces a retired pattern."""
+    found: list[str] = []
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        for pattern, reason in RETIRED_PATTERNS:
+            for match in pattern.finditer(line):
+                found.append(f"{label}:{line_number}: '{match.group(0)}' is a {reason}")
+    return found
+
+
+# Spelled out literally rather than derived from RETIRED_TOOL_CALLS, so that
+# dropping an entry from the denylist fails the self-test instead of silently
+# shrinking it too.
+SELF_TEST_BANNED = """---
+name: fixture
+---
+1. contacts.create({ first_name: "Sarah" })
+2. contacts.update(contact_id, {})
+3. interactions.log(contact_id, {})
+4. interactions.list(contact_id)
+5. actions.create(contact_id, {})
+6. actions.list({ status: "open" })
+7. actions.complete(action_id)
+8. relationships.create(a, b)
+9. notes.append(contact_id, "note")
+10. tags.add_to_contact(contact_id, "ai")
+11. search_contacts("touched:>90d")
+"""
+
+SELF_TEST_EXPECTED = (
+    "contacts.create",
+    "contacts.update",
+    "interactions.log",
+    "interactions.list",
+    "actions.create",
+    "actions.list",
+    "actions.complete",
+    "relationships.create",
+    "notes.append",
+    "tags.add_to_contact",
+    "touched:",
+)
+
+SELF_TEST_CLEAN = """---
+name: fixture
+---
+1. create_contact({ first_name: "Sarah", email: "sarah@meridianhealth.com" })
+2. log_interaction(contact_id, {})
+3. update_contact(contact_id, { tags: ["ai"], notes: "Met at the AI dinner." })
+4. Review open actions. Complete anything overdue.
+5. search_contacts({ query: "Meridian", hasEmail: true })
+"""
+
+
+def self_test() -> list[str]:
+    """Check the denylist scanner itself against known-bad and known-good bodies."""
+    failures: list[str] = []
+
+    flagged = scan_retired_patterns(SELF_TEST_BANNED, "<self-test>")
+    for expected in SELF_TEST_EXPECTED:
+        if not any(f"'{expected}'" in message for message in flagged):
+            failures.append(f"denylist self-test: '{expected}' was not flagged")
+
+    for message in scan_retired_patterns(SELF_TEST_CLEAN, "<self-test>"):
+        failures.append(f"denylist self-test: false positive on valid usage: {message}")
+
+    return failures
 
 
 def validate_readme_commands(manifest: dict, errors: list[str], warnings: list[str]) -> None:
@@ -120,6 +221,8 @@ def main() -> int:
     errors: list[str] = []
     warnings: list[str] = []
 
+    errors.extend(self_test())
+
     # --- Load the manifest ------------------------------------------------
     try:
         manifest = json.loads(MARKETPLACE.read_text(encoding="utf-8"))
@@ -160,6 +263,10 @@ def main() -> int:
         except (ValueError, OSError) as exc:
             errors.append(f"{rel}/SKILL.md: {exc}")
             continue
+
+        errors.extend(
+            scan_retired_patterns(skill_md.read_text(encoding="utf-8"), f"{rel}/SKILL.md")
+        )
 
         name = fm.get("name")
         if not name or not str(name).strip():
