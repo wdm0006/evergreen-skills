@@ -60,22 +60,23 @@ Met at Atlanta AI Dinner, April 3, 2026:
 For each contact:
 1. search_contacts({ query: "[name]" }) → check for duplicates
 2. create_contact({ ... })
-3. update_contact(id, { tags: ["event-ai-dinner-2026", "atlanta", "ai"] })
-4. log_interaction(id, {
+3. update_contact({ contactId: id, tags: ["event-ai-dinner-2026", "atlanta", "ai"] })
+4. log_interaction({
+     contactId: id,
      type: "meeting",
-     summary: "Met at Atlanta AI Dinner — [conversation topic]"
+     description: "Met at Atlanta AI Dinner — [conversation topic]"
    })
-5. update_contact(id, { notes: "[conversation details]" })
+5. update_contact({ contactId: id, notes: "[conversation details]" })
 6. create_action({
-     contact_id: id,
+     contactId: id,
      title: "Send follow-up email to [name]",
-     due_date: "2026-04-05",
+     dueDate: "2026-04-05",
      priority: "medium"
    })
 
 For Priya Sharma, the notes say "Introduced by David Kim" — record that edge:
 7. search_contacts({ query: "David Kim" }) → matches contact david_id
-8. record_introduction(introducerId: david_id, newContactId: priya_id, notes: "Introduced Priya at the Atlanta AI Dinner")
+8. record_introduction({ introducerId: david_id, newContactId: priya_id, notes: "Introduced Priya at the Atlanta AI Dinner" })
    (If David Kim isn't already a contact, skip this and keep "Introduced by David Kim" in Priya's notes.)
 ```
 

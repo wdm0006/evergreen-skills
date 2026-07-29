@@ -70,8 +70,8 @@ Best,
 
 **Post-send:**
 ```
-1. log_interaction(contact_id, type: "email", summary: "Sent API docs follow-up, offered call to discuss")
-2. mark_action_completed(action_id)  // "Send API documentation"
+1. log_interaction({ contactId: sarah_id, type: "email", description: "Sent API docs follow-up, offered call to discuss" })
+2. mark_action_completed({ actionId: api_docs_action_id })  // "Send API documentation"
 ```
 
 ## Writing Principles

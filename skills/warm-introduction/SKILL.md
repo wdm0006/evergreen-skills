@@ -61,8 +61,8 @@ I'll let you two take it from here!
 **Step 3: Log in Evergreen**
 
 ```
-1. log_interaction(sarah_id, type: "email", summary: "Introduced to Marcus Webb (DataFlow) — data pipeline overlap")
-2. log_interaction(marcus_id, type: "email", summary: "Introduced to Sarah Chen (Meridian Health) — data pipeline overlap")
+1. log_interaction({ contactId: sarah_id, type: "email", description: "Introduced to Marcus Webb (DataFlow) — data pipeline overlap" })
+2. log_interaction({ contactId: marcus_id, type: "email", description: "Introduced to Sarah Chen (Meridian Health) — data pipeline overlap" })
 3. create_relationship({
      fromContactId: sarah_id,
      toContactId: marcus_id,

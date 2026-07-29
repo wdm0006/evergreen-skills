@@ -50,23 +50,26 @@ description: Parses recent Gmail activity and logs interaction summaries to Ever
 **Logged to Evergreen:**
 ```
 1. search_contacts({ query: "sarah@meridianhealth.com" }) → Sarah Chen
-   log_interaction(sarah_id, {
+   log_interaction({
+     contactId: sarah_id,
      type: "email",
-     summary: "Discussed API integration timeline — agreed on Q3 target, Sarah reviewing docs",
+     description: "Discussed API integration timeline — agreed on Q3 target, Sarah reviewing docs",
      date: "2026-04-03"
    })
 
 2. search_contacts({ query: "marcus@dataflow.io" }) → Marcus Webb
-   log_interaction(marcus_id, {
+   log_interaction({
+     contactId: marcus_id,
      type: "email",
-     summary: "Sent partnership proposal for data pipeline collaboration",
+     description: "Sent partnership proposal for data pipeline collaboration",
      date: "2026-04-01"
    })
 
 3. search_contacts({ query: "jamie@acmelabs.io" }) → Jamie Rodriguez
-   log_interaction(jamie_id, {
+   log_interaction({
+     contactId: jamie_id,
      type: "email",
-     summary: "Planning conference panel on AI in healthcare — confirmed topic and date",
+     description: "Planning conference panel on AI in healthcare — confirmed topic and date",
      date: "2026-04-04"
    })
 

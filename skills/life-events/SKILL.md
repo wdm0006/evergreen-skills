@@ -40,16 +40,16 @@ description: Tracks and acts on life events and milestones for Evergreen CRM con
 When you learn about a milestone, record it in notes with a consistent format:
 
 ```
-update_contact(contact_id, { notes: "## Milestones\n- Birthday: March 15\n- Started at Meridian: Jan 2024\n- DataFlow Series A: Oct 2025" })
+update_contact({ contactId: sarah_id, notes: "## Milestones\n- Birthday: March 15\n- Started at Meridian: Jan 2024\n- DataFlow Series A: Oct 2025" })
 ```
 
 Create recurring actions for annual events:
 
 ```
 create_action({
-  contact_id: id,
+  contactId: sarah_id,
   title: "Birthday — send a note to Sarah Chen",
-  due_date: "2027-03-15",
+  dueDate: "2027-03-15",
   priority: "medium"
 })
 ```

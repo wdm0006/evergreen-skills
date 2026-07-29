@@ -62,9 +62,10 @@ Coffee sometime in the next couple weeks?
 
 **Post-draft:**
 ```
-create_action(contact_id, {
+create_action({
+  contactId: marcus_id,
   title: "Follow up if Marcus doesn't reply by Apr 19",
-  due_date: "2026-04-19",
+  dueDate: "2026-04-19",
   priority: "low"
 })
 ```
