@@ -16,17 +16,20 @@ description: Generates a weekly relationship management digest from Evergreen CR
 
 ## How It Works
 
-1. Pull recent activity with `get_activity_log` for the past week
-2. List interactions logged with `get_contact_interactions` for the period
-3. Check completed actions with `list_actions`
+1. Pull recent activity with `get_activity_log` for the past week, passing an explicit high `limit` (e.g. `limit: 500`). It returns only 20 entries by default, so a busy week is silently truncated and every count below comes out low
+2. List interactions logged with `get_contact_interactions` for the period, passing an explicit high `limit` (e.g. `limit: 500`) — the default is 10 per contact
+3. Check completed actions with `list_actions`, passing `limit: 100` (its maximum; the default is 50)
 4. Check overdue actions with `get_overdue_actions` and upcoming actions with `get_actions_due_soon`
-5. Search for new contacts added with `search_contacts`
-6. Compile into a structured weekly digest
+5. Search for new contacts added with `search_contacts`, passing `limit: 100` (its maximum; the default is 20)
+6. Compile into a structured weekly digest. If any read came back at the limit you asked for, the week may exceed what one call returns — narrow the reads and say so in the report rather than publishing counts you know are floors
 
 ## Report Format
 
 ```markdown
 ## Weekly Relationship Report — [Date Range]
+
+_Coverage: 143 activity entries, 100 actions and 100 contacts read; no read hit
+its limit, so the counts below are complete for the period._
 
 ### Activity Summary
 | Metric | This Week | Trend |
@@ -72,6 +75,8 @@ product. Consider a congratulatory message this week.
 
 ```
 Weekly Report:
+- [ ] Every read passed an explicit `limit` (never the defaults: 20 activity entries, 10 interactions, 50 actions, 20 contacts)
+- [ ] Coverage line states what was read and whether any read hit its limit
 - [ ] Activity data pulled for the correct date range
 - [ ] Interaction counts broken down by type
 - [ ] Follow-up completion rate calculated

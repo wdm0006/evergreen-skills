@@ -16,11 +16,12 @@ description: Audits Evergreen CRM for stale or incomplete contact data — outda
 
 ## How It Works
 
-1. Search all contacts with `search_contacts` to get the full database
-2. For each contact, check for data quality issues using `get_contact`
-3. Flag incomplete records, stale information, and potential problems
-4. Prioritize fixes by relationship importance
-5. Generate a cleanup task list with suggested fixes
+1. Pull contacts with `search_contacts`, always passing an explicit `limit: 100` — its maximum. Without a `limit` it returns only 20 and the audit silently covers a fraction of the database
+2. If the database is larger than 100 contacts, sweep it in batches using the filters `search_contacts` already exposes (`tags`, `organization`, `location`, `hasEmail`, `hasPhone`, `overdue`, `hasNextAction`) so each batch stays under the cap, and keep track of which slices you covered
+3. For each contact retrieved, check for data quality issues using `get_contact`
+4. Flag incomplete records, stale information, and potential problems
+5. Prioritize fixes by relationship importance
+6. Generate a cleanup task list with suggested fixes, and state up front how many contacts the audit actually covered
 
 ## Data Quality Checks
 
@@ -40,10 +41,16 @@ description: Audits Evergreen CRM for stale or incomplete contact data — outda
 ```markdown
 ## Data Audit Report — April 2026
 
+### Coverage
+Audited **100 of 187 contacts** (total per Evergreen's contact count).
+`search_contacts` returns at most 100 per call, so this run covered the first
+100 it returned. Sweep the remaining 87 by filtering on `tags`, `organization`
+or `location` and re-running.
+
 ### Summary
-- **Total contacts:** 187
-- **Complete records:** 112 (60%)
-- **Needs attention:** 75 (40%)
+- **Contacts audited:** 100
+- **Complete records:** 60 (60%)
+- **Needs attention:** 40 (40%)
 
 ### Critical Issues (12)
 1. **Sarah Chen** — Email missing (have everything else)
@@ -52,13 +59,13 @@ description: Audits Evergreen CRM for stale or incomplete contact data — outda
 4. **[5 contacts]** — Duplicate suspected (same org + similar name)
 
 ### Missing Fields Summary
-| Field | Missing Count | % of Contacts |
-|-------|--------------|---------------|
-| Email | 23 | 12% |
-| Organization | 18 | 10% |
-| Title | 31 | 17% |
-| Location | 45 | 24% |
-| Tags | 38 | 20% |
+| Field | Missing Count | % of Audited |
+|-------|--------------|--------------|
+| Email | 12 | 12% |
+| Organization | 10 | 10% |
+| Title | 17 | 17% |
+| Location | 24 | 24% |
+| Tags | 20 | 20% |
 
 ### Likely Job Changes
 Contacts where title was set 12+ months ago and they're at a startup
@@ -70,14 +77,18 @@ Contacts where title was set 12+ months ago and they're at a startup
 1. Enrich the 12 critical contacts (use contact-enrichment skill)
 2. Review 5 suspected duplicates for merging
 3. Archive or delete 5 orphaned contacts with no activity
-4. Batch-update missing tags for 38 untagged contacts
+4. Batch-update missing tags for 20 untagged contacts
+5. Re-run the audit over the 87 contacts not covered by this batch
 ```
 
 ## Checklist
 
 ```
 Data Audit:
-- [ ] All contacts scanned for completeness
+- [ ] `search_contacts` called with an explicit `limit: 100` (never the default 20)
+- [ ] Report states how many contacts were audited out of how many exist
+- [ ] Any uncovered slice named so the next run can pick it up
+- [ ] Contacts retrieved scanned for completeness
 - [ ] Critical issues (missing email, duplicates) flagged first
 - [ ] Missing fields summarized by type
 - [ ] Potentially stale titles identified

@@ -17,8 +17,8 @@ description: Generates a narrative summary of everything known about a contact i
 ## How It Works
 
 1. Look up the contact with `get_contact` for full profile
-2. Pull all interactions with `get_contact_interactions` for complete history
-3. Check pending actions with `list_actions`
+2. Pull the interaction history with `get_contact_interactions`, passing an explicit high `limit` (e.g. `limit: 500`). It returns only the 10 most recent by default, which drops the oldest interaction — exactly the one "How You Connected" depends on. If the response comes back at the limit you asked for, say so rather than presenting a truncated timeline as complete
+3. Check pending actions with `list_actions`, passing `limit: 100` (its maximum)
 4. Map their network with `get_contact_network` for relationships and introductions
 5. Check introduction chains with `get_introduction_chain`
 6. Compile into a narrative summary
@@ -39,7 +39,7 @@ description: Generates a narrative summary of everything known about a contact i
 - **[Date]** — [Interaction type]: [Summary]
 - **[Date]** — [Interaction type]: [Summary]
 - **[Date]** — [Interaction type]: [Summary]
-[... complete history]
+[... back to the earliest interaction; note here if the history was truncated]
 
 ### What They're Working On
 [Synthesized from notes and recent interactions — their current focus,
@@ -108,7 +108,8 @@ $4M seed round. Hiring engineers aggressively.
 ```
 Context Recall:
 - [ ] Full contact profile retrieved
-- [ ] Complete interaction history reviewed
+- [ ] `get_contact_interactions` called with an explicit high `limit` (never the default 10)
+- [ ] Earliest interaction present, so "How You Connected" is grounded in the record
 - [ ] Network and relationships mapped
 - [ ] Introduction chain traced
 - [ ] Open actions and threads identified
