@@ -57,37 +57,39 @@ We agreed to:
 
 **Processed into Evergreen:**
 ```
-1. log_interaction(sarah_id, {
+1. log_interaction({
+     contactId: sarah_id,
      type: "call",
-     summary: "Discussed API integration — Q3 pilot start. Lisa handling procurement. New tech contact Raj Patel joining."
+     description: "Discussed API integration — Q3 pilot start. Lisa handling procurement. New tech contact Raj Patel joining."
    })
 
-2. log_interaction(lisa_id, {
+2. log_interaction({
+     contactId: lisa_id,
      type: "call",
-     summary: "Procurement discussion for API integration. Needs security questionnaire by end of April."
+     description: "Procurement discussion for API integration. Needs security questionnaire by end of April."
    })
 
 3. create_action({
-     contact_id: lisa_id,
+     contactId: lisa_id,
      title: "Send security questionnaire to Lisa Park",
-     due_date: "2026-04-15",
+     dueDate: "2026-04-15",
      priority: "high"
    })
 
 4. create_action({
-     contact_id: sarah_id,
+     contactId: sarah_id,
      title: "Schedule technical deep-dive with Raj Patel (after intro)",
      priority: "medium"
    })
 
 5. create_action({
-     contact_id: sarah_id,
+     contactId: sarah_id,
      title: "Follow up if Sarah hasn't sent data schema doc by Apr 12",
-     due_date: "2026-04-12",
+     dueDate: "2026-04-12",
      priority: "medium"
    })
 
-6. update_contact(sarah_id, { notes: "Apr 5 call: Q3 pilot confirmed. New tech contact: Raj Patel (data engineer). Lisa handling procurement." })
+6. update_contact({ contactId: sarah_id, notes: "Apr 5 call: Q3 pilot confirmed. New tech contact: Raj Patel (data engineer). Lisa handling procurement." })
 ```
 
 ## Checklist

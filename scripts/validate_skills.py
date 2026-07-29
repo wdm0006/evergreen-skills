@@ -10,9 +10,9 @@ Checks that:
   * README plugin install commands reference the manifest's marketplace name
     and defined plugin bundles;
   * the README marketplace-add repository slug matches the marketplace name;
-  * no SKILL.md reintroduces a retired tool-name or query-token pattern that was
-    verified against the Evergreen MCP server to match nothing (denylist only —
-    there is no allowlist of valid tool names here);
+  * no SKILL.md reintroduces a retired tool-name, argument-name or query-token
+    pattern that was verified against the Evergreen MCP server to match nothing
+    (denylist only — there is no allowlist of valid tool names here);
   * (warning only) every skills/* directory is referenced by at least one bundle.
 
 Exits non-zero if any error is found. Run locally with:
@@ -54,6 +54,17 @@ RETIRED_TOOL_CALLS = (
     "tags.add_to_contact",
 )
 
+# Argument names the skills used to document. The evergreen-mcp server's argument
+# schema is camelCase throughout, and a contact carries a single `name` field, so
+# each of these is a hard validation failure rather than a style preference.
+RETIRED_ARGUMENT_NAMES = (
+    "contact_id",
+    "due_date",
+    "action_id",
+    "first_name",
+    "last_name",
+)
+
 RETIRED_PATTERNS = (
     (
         re.compile(r"\b(?:%s)\b" % "|".join(re.escape(call) for call in RETIRED_TOOL_CALLS)),
@@ -64,6 +75,11 @@ RETIRED_PATTERNS = (
         re.compile(r"\btouched:"),
         "retired search_contacts query token; search_contacts has no time-threshold "
         "filter, so recency must be computed from returned last-interaction dates",
+    ),
+    (
+        re.compile(r"\b(?:%s)\b" % "|".join(re.escape(name) for name in RETIRED_ARGUMENT_NAMES)),
+        "retired snake_case argument name; evergreen-mcp arguments are camelCase "
+        "(contactId, dueDate, actionId) and a contact has a single 'name' field",
     ),
 )
 
@@ -130,6 +146,9 @@ name: fixture
 9. notes.append(contact_id, "note")
 10. tags.add_to_contact(contact_id, "ai")
 11. search_contacts("touched:>90d")
+12. create_contact({ first_name: "Sarah", last_name: "Chen" })
+13. create_action({ contact_id: id, due_date: "2026-04-05" })
+14. mark_action_completed(action_id)
 """
 
 SELF_TEST_EXPECTED = (
@@ -144,16 +163,23 @@ SELF_TEST_EXPECTED = (
     "notes.append",
     "tags.add_to_contact",
     "touched:",
+    "contact_id",
+    "due_date",
+    "action_id",
+    "first_name",
+    "last_name",
 )
 
 SELF_TEST_CLEAN = """---
 name: fixture
 ---
-1. create_contact({ first_name: "Sarah", email: "sarah@meridianhealth.com" })
-2. log_interaction(contact_id, {})
-3. update_contact(contact_id, { tags: ["ai"], notes: "Met at the AI dinner." })
-4. Review open actions. Complete anything overdue.
-5. search_contacts({ query: "Meridian", hasEmail: true })
+1. create_contact({ name: "Sarah Chen", emails: ["sarah@meridianhealth.com"] })
+2. log_interaction({ contactId: sarah_id, type: "email", description: "Sent docs" })
+3. update_contact({ contactId: sarah_id, tags: ["ai"], notes: "Met at the AI dinner." })
+4. create_action({ contactId: sarah_id, title: "Follow up", dueDate: "2026-04-05" })
+5. mark_action_completed({ actionId: docs_action_id })
+6. Review open actions. Complete anything overdue.
+7. search_contacts({ query: "Meridian", hasEmail: true })
 """
 
 

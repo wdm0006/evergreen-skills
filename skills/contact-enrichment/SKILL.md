@@ -44,15 +44,16 @@ Email: jamie@acmelabs.io
 
 **After enrichment:**
 ```
-1. get_contact(id) → sparse record
+1. get_contact({ contactId: jamie_id }) → sparse record
 2. Web search "Jamie Rodriguez acmelabs.io"
-3. update_contact(id, {
+3. update_contact({
+     contactId: jamie_id,
      title: "VP of Engineering",
      organization: "Acme Labs",
      location: "San Francisco, CA"
    })
-4. update_contact(id, { notes: "## Research (2026-04-05)\n- VP Eng at Acme Labs (Series B, 50 employees)\n- Previously at Stripe (2019-2024)\n- Speaks at PyCon regularly\n- Interested in developer tools and open source" })
-5. update_contact(id, { tags: ["engineering", "startup", "developer-tools"] })
+4. update_contact({ contactId: jamie_id, notes: "## Research (2026-04-05)\n- VP Eng at Acme Labs (Series B, 50 employees)\n- Previously at Stripe (2019-2024)\n- Speaks at PyCon regularly\n- Interested in developer tools and open source" })
+5. update_contact({ contactId: jamie_id, tags: ["engineering", "startup", "developer-tools"] })
 ```
 
 ## Checklist

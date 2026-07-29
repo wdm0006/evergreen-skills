@@ -46,17 +46,17 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 
 1. **DataFlow** (Marcus Webb's company)
    "DataFlow raises $12M Series A led by Sequoia"
-   → update_contact(marcus_id, { notes: "Apr 2026: DataFlow raised $12M Series A (Sequoia)" })
+   → update_contact({ contactId: marcus_id, notes: "Apr 2026: DataFlow raised $12M Series A (Sequoia)" })
    → create_action({ title: "Congratulate Marcus on Series A", priority: "high" })
 
 2. **Sarah Chen** (Meridian Health)
    Published a blog post: "How We Rebuilt Our Data Pipeline in 6 Months"
-   → update_contact(sarah_id, { notes: "Apr 2026: Published blog on data pipeline rebuild" })
+   → update_contact({ contactId: sarah_id, notes: "Apr 2026: Published blog on data pipeline rebuild" })
    → Good reference for your next conversation
 
 3. **Jamie Rodriguez** (Acme Labs)
    LinkedIn shows new title: "VP of Engineering" (was Senior Engineer)
-   → update_contact(jamie_id, { title: "VP of Engineering" })
+   → update_contact({ contactId: jamie_id, title: "VP of Engineering" })
    → create_action({ title: "Congratulate Jamie on VP promotion", priority: "medium" })
 
 ### No News Found

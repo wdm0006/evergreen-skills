@@ -47,18 +47,17 @@ and she's really interested in our API work. David Kim introduced us.
 ```
 1. search_contacts({ query: "Sarah Chen" }) → no match
 2. create_contact({
-     first_name: "Sarah",
-     last_name: "Chen",
+     name: "Sarah Chen",
      title: "CTO",
      organization: "Meridian Health",
-     email: "sarah@meridianhealth.com",
+     emails: ["sarah@meridianhealth.com"],
      location: "Atlanta"
-   })
-3. update_contact(contact_id, { tags: ["ai", "healthcare", "atlanta"] })
-4. update_contact(contact_id, { notes: "Met at Atlanta AI Dinner. Introduced by David Kim. Interested in our API work." })
+   }) → sarah_id
+3. update_contact({ contactId: sarah_id, tags: ["ai", "healthcare", "atlanta"] })
+4. update_contact({ contactId: sarah_id, notes: "Met at Atlanta AI Dinner. Introduced by David Kim. Interested in our API work." })
 5. search_contacts({ query: "David Kim" }) → matches contact david_id
-6. record_introduction(introducerId: david_id, newContactId: contact_id, notes: "Introduced Sarah at the Atlanta AI Dinner")
-7. log_interaction(contact_id, type: "meeting", summary: "Met at Atlanta AI Dinner — discussed API work")
+6. record_introduction({ introducerId: david_id, newContactId: sarah_id, notes: "Introduced Sarah at the Atlanta AI Dinner" })
+7. log_interaction({ contactId: sarah_id, type: "meeting", description: "Met at Atlanta AI Dinner — discussed API work" })
 ```
 (If `search_contacts` finds no match for the introducer, skip step 6 and keep the note from step 4.)
 
@@ -66,7 +65,7 @@ and she's really interested in our API work. David Kim introduced us.
 
 ```
 Contact Capture:
-- [ ] Name parsed correctly (first/last split)
+- [ ] Full name captured in the single `name` field (no first/last split)
 - [ ] Duplicate check performed before creating
 - [ ] All available fields populated
 - [ ] Tags applied for context/source
