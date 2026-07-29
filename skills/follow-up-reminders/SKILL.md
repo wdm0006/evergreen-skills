@@ -17,10 +17,11 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 ## How It Works
 
 1. Pull overdue actions with `get_overdue_actions` and actions approaching their due dates with `get_actions_due_soon`
-2. Identify contacts with stale interactions by listing them with `search_contacts` and comparing each contact's last-interaction date against your cadence thresholds
-3. Cross-reference with relationship context using `get_contact` for high-priority contacts
-4. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups
-5. Present a ranked list with context for each follow-up
+2. Identify contacts with stale interactions by listing them with `search_contacts` — always passing an explicit `limit: 100`, its maximum, since the default of 20 would sweep only a fraction of the database — and comparing each contact's last-interaction date against your cadence thresholds
+3. If there are more than 100 contacts, sweep in batches using the filters `search_contacts` already exposes (`tags`, `organization`, `location`, `hasEmail`, `hasPhone`, `overdue`, `hasNextAction`), prioritizing the slices that hold your important relationships, and say which slices the list came from
+4. Cross-reference with relationship context using `get_contact` for high-priority contacts
+5. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups
+6. Present a ranked list with context for each follow-up
 
 ## Priority Framework
 
@@ -59,13 +60,14 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 | Extended network | Quarterly | 90 days |
 | Dormant (re-engage?) | 6+ months | 180 days |
 
-`search_contacts` has no time-based filter, so compare each contact's last-interaction date against these thresholds yourself.
+`search_contacts` has no time-based filter, so compare each contact's last-interaction date against these thresholds yourself — over the batch you actually retrieved, which is at most 100 contacts per call.
 
 ## Checklist
 
 ```
 Follow-Up Review:
 - [ ] Overdue actions surfaced and prioritized
+- [ ] `search_contacts` called with an explicit `limit: 100` (never the default 20)
 - [ ] Stale high-value contacts identified
 - [ ] Context provided for each follow-up
 - [ ] Actionable next step suggested for each
