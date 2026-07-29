@@ -16,31 +16,28 @@ description: Scores and surfaces relationship health across your Evergreen CRM c
 
 ## How It Works
 
-1. Pull all contacts and recent interactions with `search_contacts`
-2. For high-value contacts, get full details with `get_contact` and `get_contact_interactions`
-3. Analyze the global network with `get_global_network` for relationship patterns
-4. Score each relationship on recency, frequency, and depth
-5. Categorize into health tiers and surface actionable insights
+1. Call `get_relationship_strength_statistics` for the network summary, including the average score and contact count by grade
+2. Call `get_relationship_strengths` with the Weak grade filter and `limit: 100`, then repeat with the Dormant grade filter, to build the ranked needs-attention list without scanning every contact
+3. For the handful of contacts included in the report, use `get_contact` and `get_contact_interactions` to explain why the relationship needs attention and suggest a specific action
+4. Analyze the global network with `get_global_network` for cluster and relationship patterns
+5. For a single-contact health check, call `get_relationship_strength` and supplement it with contact details and interactions as needed
 
 ## Health Scoring
 
-| Factor | Signal | Weight |
-|--------|--------|--------|
-| Recency | Days since last interaction | High |
-| Frequency | Interactions per month over last 6 months | Medium |
-| Depth | Mix of interaction types (not just email) | Medium |
-| Reciprocity | Balance of inbound vs outbound | Low |
-| Momentum | Increasing or decreasing frequency | Medium |
+Evergreen calculates relationship strength scores from 0–100 based on recency,
+frequency, depth, and variety of interactions. Use the score returned by the
+relationship-strength tools rather than calculating or weighting these factors
+in the skill.
 
-## Health Tiers
+## Health Grades
 
-| Tier | Criteria | Action |
-|------|----------|--------|
-| Thriving | Interacted in last 14 days, regular cadence | Maintain current pace |
-| Healthy | Interacted in last 30 days, steady cadence | No action needed |
-| Cooling | 30-60 days since last interaction | Consider a check-in |
-| At Risk | 60-90 days, declining frequency | Prioritize outreach this week |
-| Dormant | 90+ days since last interaction | Re-engagement needed |
+| Grade | Score | Action |
+|-------|-------|--------|
+| Strong | 80–100 | Maintain current pace |
+| Good | 60–79 | No action needed |
+| Moderate | 40–59 | Consider a check-in |
+| Weak | 20–39 | Prioritize outreach this week |
+| Dormant | 0–19 | Re-engagement needed |
 
 ## Example Output
 
@@ -49,22 +46,22 @@ description: Scores and surfaces relationship health across your Evergreen CRM c
 
 ### Summary
 - **Total active contacts:** 127
-- **Thriving:** 12 (9%)
-- **Healthy:** 34 (27%)
-- **Cooling:** 28 (22%)
-- **At Risk:** 18 (14%)
+- **Strong:** 12 (9%)
+- **Good:** 34 (27%)
+- **Moderate:** 28 (22%)
+- **Weak:** 18 (14%)
 - **Dormant:** 35 (28%)
 
-### Needs Attention (Top 5 At-Risk)
-1. **Marcus Webb** (Founder, DataFlow) — 62 days since last contact.
+### Needs Attention (Top 5 Weak or Dormant)
+1. **Marcus Webb** (Founder, DataFlow) — Weak, score 38.
    Was very active (4 interactions in Q1). Partnership proposal pending.
-2. **Lisa Park** (VP Product, Meridian) — 58 days. Procurement
+2. **Lisa Park** (VP Product, Meridian) — Weak, score 35. Procurement
    discussion stalled. You owe security questionnaire.
-3. **David Kim** (DataTech) — 55 days. Key introducer in your network
+3. **David Kim** (DataTech) — Weak, score 32. Key introducer in your network
    (introduced 4 contacts). Worth maintaining.
-4. **Rachel Torres** (Angel investor) — 71 days. Offered to help with
+4. **Rachel Torres** (Angel investor) — Dormant, score 18. Offered to help with
    hiring, never followed up.
-5. **Tom Bradley** (Advisor) — 68 days. Quarterly coffee overdue.
+5. **Tom Bradley** (Advisor) — Dormant, score 15. Quarterly coffee overdue.
 
 ### Network Insights
 - Your most active cluster: Atlanta AI community (23 contacts, avg 18 days between interactions)
@@ -77,10 +74,10 @@ description: Scores and surfaces relationship health across your Evergreen CRM c
 
 ```
 Relationship Health:
-- [ ] All contacts scored on recency, frequency, depth
-- [ ] Health tiers assigned
-- [ ] At-risk relationships prioritized by value
-- [ ] Specific action suggested for each at-risk contact
+- [ ] Relationship strength statistics summarized
+- [ ] Strong, Good, Moderate, Weak, and Dormant grades reported
+- [ ] Weak and Dormant relationships prioritized by value
+- [ ] Specific action suggested for each Weak or Dormant contact
 - [ ] Network-level insights provided (clusters, trends)
 - [ ] Pending stale actions flagged
 ```
