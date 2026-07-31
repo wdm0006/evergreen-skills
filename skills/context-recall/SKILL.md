@@ -17,7 +17,7 @@ description: Generates a narrative summary of everything known about a contact i
 ## How It Works
 
 1. Look up the contact with `get_contact` for full profile
-2. Pull the interaction history with `get_contact_interactions`, passing an explicit high `limit` (e.g. `limit: 500`). It returns only the 10 most recent by default, which drops the oldest interaction — exactly the one "How You Connected" depends on. If the response comes back at the limit you asked for, say so rather than presenting a truncated timeline as complete
+2. Pull the interaction history with `get_contact_interactions`, passing `limit: 50` — that is the tool's maximum, not just a generous number, and the default of 10 drops the oldest interactions. The read takes no offset or cursor, so 50 is a hard ceiling: if exactly 50 come back, the history is truncated and the earliest interaction is not reachable through this API at all. Say so rather than presenting a partial timeline as complete
 3. Check pending actions with `list_actions`, passing `limit: 100` (its maximum)
 4. Map their network with `get_contact_network` for relationships and introductions
 5. Check introduction chains with `get_introduction_chain`
@@ -33,13 +33,18 @@ description: Generates a narrative summary of everything known about a contact i
 **Tags:** [tags]
 
 ### How You Connected
-[Narrative: who introduced you, where you met, initial context]
+[Narrative: who introduced you, where you met, initial context. If the interaction
+read came back at its 50-entry maximum, the earliest interaction is missing and
+cannot be fetched — qualify this section ("the record starts at [date]") instead of
+asserting how you met]
 
 ### Relationship Timeline
 - **[Date]** — [Interaction type]: [Summary]
 - **[Date]** — [Interaction type]: [Summary]
 - **[Date]** — [Interaction type]: [Summary]
-[... back to the earliest interaction; note here if the history was truncated]
+[... back to the earliest interaction returned; if 50 came back, note here that the
+history is truncated at the tool's maximum and the true first interaction is not
+retrievable]
 
 ### What They're Working On
 [Synthesized from notes and recent interactions — their current focus,
@@ -108,8 +113,8 @@ $4M seed round. Hiring engineers aggressively.
 ```
 Context Recall:
 - [ ] Full contact profile retrieved
-- [ ] `get_contact_interactions` called with an explicit high `limit` (never the default 10)
-- [ ] Earliest interaction present, so "How You Connected" is grounded in the record
+- [ ] `get_contact_interactions` called with `limit: 50`, its maximum (never the default 10)
+- [ ] If 50 interactions came back, the timeline is flagged as truncated and "How You Connected" is qualified rather than asserted — this read has no pagination, so the earliest interaction cannot be fetched
 - [ ] Network and relationships mapped
 - [ ] Introduction chain traced
 - [ ] Open actions and threads identified
