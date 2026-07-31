@@ -16,12 +16,13 @@ description: Identifies dormant contacts in Evergreen CRM and drafts natural re-
 
 ## How It Works
 
-1. List contacts with `search_contacts`, then identify dormant ones by their last-interaction date (e.g., older than 90 or 180 days)
-2. For each candidate, pull full context with `get_contact` and `get_contact_interactions`
-3. Check their network connections with `get_contact_network` for warm re-entry points
-4. Research recent activity (job changes, company news) for a natural conversation hook
-5. Draft a low-pressure re-engagement message
-6. Create a follow-up action with `create_action` to track the outreach
+1. Shortlist candidates with `get_relationship_strengths({ grade: "Dormant", limit: 100 })`, then repeat with `grade: "Weak"` (or set a `maxScore` ceiling) to widen the net. The server scores every contact 0–100 on recency, frequency, depth and variety and returns them sorted strongest-first
+2. Resolve each candidate to a contact ID with `search_contacts({ query: "<name>" })` — `get_relationship_strengths` returns name, organization, score and grade, but no contact ID
+3. Confirm each one is genuinely dormant by reading the `Last Interaction` date from `get_contact`, and pull the history with `get_contact_interactions`. The score is a candidate filter, not the verdict — a low grade means "probably cold, go check", so the "older than 90 or 180 days" judgment and any day count you state come from that date. `search_contacts` results report `Last Updated`, the record's modification time, which an enrichment edit refreshes
+4. Check their network connections with `get_contact_network` for warm re-entry points
+5. Research recent activity (job changes, company news) for a natural conversation hook
+6. Draft a low-pressure re-engagement message
+7. Create a follow-up action with `create_action` to track the outreach
 
 ## Re-Engagement Hooks
 
@@ -39,11 +40,17 @@ description: Identifies dormant contacts in Evergreen CRM and drafts natural re-
 **Dormant contact:**
 ```
 Contact: Marcus Webb (Founder, DataFlow)
-Last interaction: Oct 15 (meeting) — "Discussed potential data partnership"
+Relationship strength: 38/100 (Weak) — from get_relationship_strengths
+Last interaction: Oct 15 (meeting) — "Discussed potential data partnership",
+  from get_contact
 Tags: founder, data, atlanta
 Notes: "Building real-time analytics platform. Previously at Google."
-Dormant: 173 days
+Dormant: 173 days since last interaction
 ```
+
+Marcus grades Weak rather than Dormant — an earlier run of frequent, substantive
+meetings still props up his score — which is why the shortlist covers both bands
+and why the 173 days is read from `get_contact`, not inferred from the grade.
 
 **Drafted message:**
 ```
@@ -84,7 +91,9 @@ create_action({
 
 ```
 Re-Engagement:
-- [ ] Dormant contacts identified by interaction recency
+- [ ] Candidates shortlisted with `get_relationship_strengths` (Dormant, plus Weak to widen the net)
+- [ ] Each candidate resolved to an ID with `search_contacts({ query })`
+- [ ] Dormancy confirmed against `get_contact`'s `Last Interaction` date, not a score
 - [ ] Prioritized by relationship value and re-engagement potential
 - [ ] Natural hook found for each message (not generic)
 - [ ] Message is brief and low-pressure
