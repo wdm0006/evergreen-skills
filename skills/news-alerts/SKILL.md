@@ -20,7 +20,7 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 2. Get full details with `get_contact` for name, organization, and context
 3. Web search for recent news about the contact and their company
 4. For notable findings, append to the contact's `notes` with `update_contact`
-5. Create outreach actions with `create_action` for timely conversation starters
+5. Create outreach actions for the contact with `create_action` (`contactId` and `title` are required; add a `dueDate` since news hooks go stale)
 6. Log any outreach as interactions with `log_interaction`
 
 ## What to Monitor
@@ -47,7 +47,7 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 1. **DataFlow** (Marcus Webb's company)
    "DataFlow raises $12M Series A led by Sequoia"
    → update_contact({ contactId: marcus_id, notes: "Apr 2026: DataFlow raised $12M Series A (Sequoia)" })
-   → create_action({ title: "Congratulate Marcus on Series A", priority: "high" })
+   → create_action({ contactId: marcus_id, title: "Congratulate Marcus on Series A", dueDate: "2026-04-09", priority: "high" })
 
 2. **Sarah Chen** (Meridian Health)
    Published a blog post: "How We Rebuilt Our Data Pipeline in 6 Months"
@@ -57,7 +57,7 @@ description: Monitors news and web mentions for Evergreen CRM contacts and their
 3. **Jamie Rodriguez** (Acme Labs)
    LinkedIn shows new title: "VP of Engineering" (was Senior Engineer)
    → update_contact({ contactId: jamie_id, title: "VP of Engineering" })
-   → create_action({ title: "Congratulate Jamie on VP promotion", priority: "medium" })
+   → create_action({ contactId: jamie_id, title: "Congratulate Jamie on VP promotion", dueDate: "2026-04-10", priority: "medium" })
 
 ### No News Found
 - Tom Bradley, Lisa Park, David Kim, Priya Sharma (4 contacts)
