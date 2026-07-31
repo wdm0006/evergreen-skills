@@ -16,20 +16,21 @@ description: Generates a weekly relationship management digest from Evergreen CR
 
 ## How It Works
 
-1. Pull recent activity with `get_activity_log` for the past week, passing an explicit high `limit` (e.g. `limit: 500`). It returns only 20 entries by default, so a busy week is silently truncated and every count below comes out low
-2. List interactions logged with `get_contact_interactions` for the period, passing an explicit high `limit` (e.g. `limit: 500`) — the default is 10 per contact
+1. Pull recent activity with `get_activity_log`, passing `limit: 100` (its maximum; the default is 20). The tool has no date-range parameter — it returns the most recent entries and you select the week from them client-side, so the week is only fully covered if the response comes back under 100. At exactly 100 the log is truncated at the ceiling and the week may start before the oldest entry you got; there is no offset or cursor to reach further back, so say so instead of publishing counts you know are floors
+2. List interactions logged with `get_contact_interactions` for the period, passing `limit: 50` (its maximum; the default is 10 per contact). This read has no pagination either — a contact returning 50 has more history than one call can reach
 3. Check completed actions with `list_actions`, passing `limit: 100` (its maximum; the default is 50)
 4. Check overdue actions with `get_overdue_actions` and upcoming actions with `get_actions_due_soon`
 5. Search for new contacts added with `search_contacts`, passing `limit: 100` (its maximum; the default is 20)
-6. Compile into a structured weekly digest. If any read came back at the limit you asked for, the week may exceed what one call returns — narrow the reads and say so in the report rather than publishing counts you know are floors
+6. Compile into a structured weekly digest. A read that comes back at its maximum is truncated, and none of these reads paginate — so narrow it with the filters the tool already exposes (`get_activity_log` takes `entityType` and `agentId`; `list_actions` takes `status` and `dueDateAfter`/`dueDateBefore`) and state in the coverage line which reads hit their ceiling
 
 ## Report Format
 
 ```markdown
 ## Weekly Relationship Report — [Date Range]
 
-_Coverage: 143 activity entries, 100 actions and 100 contacts read; no read hit
-its limit, so the counts below are complete for the period._
+_Coverage: 87 activity entries, 41 actions and 63 contacts read — no read came back
+at its maximum, so the counts below are complete for the period. The activity log
+has no date filter, so the week was selected client-side from those 87 entries._
 
 ### Activity Summary
 | Metric | This Week | Trend |
@@ -75,9 +76,9 @@ product. Consider a congratulatory message this week.
 
 ```
 Weekly Report:
-- [ ] Every read passed an explicit `limit` (never the defaults: 20 activity entries, 10 interactions, 50 actions, 20 contacts)
-- [ ] Coverage line states what was read and whether any read hit its limit
-- [ ] Activity data pulled for the correct date range
+- [ ] Every read passed an explicit `limit` at the tool's maximum — `get_activity_log` 100, `get_contact_interactions` 50, `list_actions` 100, `search_contacts` 100 (never the defaults: 20, 10, 50, 20)
+- [ ] Coverage line states what was read and whether any read came back at its maximum, which means truncation — none of these reads take an offset or cursor
+- [ ] Activity entries filtered to the correct date range client-side (`get_activity_log` has no date parameter)
 - [ ] Interaction counts broken down by type
 - [ ] Follow-up completion rate calculated
 - [ ] New contacts listed with source/context
