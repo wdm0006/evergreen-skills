@@ -18,7 +18,7 @@ description: Generates a weekly relationship management digest from Evergreen CR
 
 1. Pull recent activity with `get_activity_log`, passing `limit: 100` (its maximum; the default is 20). The tool has no date-range parameter — it returns the most recent entries and you select the week from them client-side, so the week is only fully covered if the response comes back under 100. At exactly 100 the log is truncated at the ceiling and the week may start before the oldest entry you got; there is no offset or cursor to reach further back, so say so instead of publishing counts you know are floors
 2. List interactions logged with `get_contact_interactions` for the period, passing `limit: 50` (its maximum; the default is 10 per contact). This read has no pagination either — a contact returning 50 has more history than one call can reach
-3. Check completed actions with `list_actions`, passing `limit: 100` (its maximum; the default is 50)
+3. Check completed actions with `list_actions({ status: "completed", limit: 100 })` (100 is its maximum; the default is 50). Narrow by due date with `dueDateAfter` and `dueDateBefore` when needed; these filter due dates, not completion dates
 4. Check overdue actions with `get_overdue_actions` and upcoming actions with `get_actions_due_soon`
 5. Search for new contacts added with `search_contacts`, passing `limit: 100` (its maximum; the default is 20)
 6. Compile into a structured weekly digest. A read that comes back at its maximum is truncated, and none of these reads paginate — so narrow it with the filters the tool already exposes (`get_activity_log` takes `entityType` and `agentId`; `list_actions` takes `status` and `dueDateAfter`/`dueDateBefore`) and state in the coverage line which reads hit their ceiling
@@ -80,6 +80,7 @@ Weekly Report:
 - [ ] Coverage line states what was read and whether any read came back at its maximum, which means truncation — none of these reads take an offset or cursor
 - [ ] Activity entries filtered to the correct date range client-side (`get_activity_log` has no date parameter)
 - [ ] Interaction counts broken down by type
+- [ ] Completed actions read with list_actions using status: "completed" and limit: 100; any dueDateAfter/dueDateBefore narrowing is described as a due-date range
 - [ ] Follow-up completion rate calculated
 - [ ] New contacts listed with source/context
 - [ ] Notable interactions highlighted

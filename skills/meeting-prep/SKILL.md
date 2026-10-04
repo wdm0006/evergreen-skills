@@ -18,7 +18,7 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 
 1. Look up the contact(s) with `get_contact` for full profile
 2. Pull recent interactions with `get_contact_interactions` (last 5-10)
-3. Check pending actions with `list_actions` for open commitments
+3. Check pending actions with `list_actions({ contactId, status: "pending" })` for open commitments, using the ID of the contact being reviewed
 4. Map their network with `get_contact_network` for shared connections
 5. Read each contact's server-computed score and grade with `get_relationship_strength({ contactId })`
 6. Read who introduced each contact to you with `get_introducer({ contactId })`
@@ -116,7 +116,7 @@ For meetings with multiple attendees, generate a brief for each person and add a
 Meeting Prep:
 - [ ] Contact profile reviewed
 - [ ] Last 5+ interactions summarized
-- [ ] Open actions identified
+- [ ] Open actions read with list_actions using that contact's contactId and status: "pending"
 - [ ] Shared network mapped
 - [ ] Server score and grade read with get_relationship_strength
 - [ ] Introducer read with get_introducer; both lines omitted if none recorded

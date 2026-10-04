@@ -18,7 +18,7 @@ description: Generates a narrative summary of everything known about a contact i
 
 1. Look up the contact with `get_contact` for full profile
 2. Pull the interaction history with `get_contact_interactions`, passing `limit: 50` — that is the tool's maximum, not just a generous number, and the default of 10 drops the oldest interactions. The read takes no offset or cursor, so 50 is a hard ceiling: if exactly 50 come back, the history is truncated and the earliest interaction is not reachable through this API at all. Say so rather than presenting a partial timeline as complete
-3. Check pending actions with `list_actions`, passing `limit: 100` (its maximum)
+3. Check pending actions with `list_actions({ contactId, status: "pending", limit: 100 })`, using the ID of the contact being reviewed (100 is its maximum)
 4. Map their network with `get_contact_network` for relationships and introductions
 5. Check introduction chains with `get_introduction_chain`
 6. Compile into a narrative summary
@@ -117,7 +117,7 @@ Context Recall:
 - [ ] If 50 interactions came back, the timeline is flagged as truncated and "How You Connected" is qualified rather than asserted — this read has no pagination, so the earliest interaction cannot be fetched
 - [ ] Network and relationships mapped
 - [ ] Introduction chain traced
-- [ ] Open actions and threads identified
+- [ ] Open actions read with list_actions using that contact's contactId, status: "pending", and limit: 100; unresolved threads identified
 - [ ] Narrative is readable and useful (not just raw data)
 ```
 
