@@ -18,9 +18,10 @@ description: Scores and surfaces relationship health across your Evergreen CRM c
 
 1. Call `get_relationship_strength_statistics` for the network summary, including the average score and contact count by grade
 2. Call `get_relationship_strengths` with the Weak grade filter and `limit: 100`, then repeat with the Dormant grade filter, to build the ranked needs-attention list without scanning every contact
-3. For the handful of contacts included in the report, use `get_contact` and `get_contact_interactions` to explain why the relationship needs attention and suggest a specific action
-4. Analyze the global network with `get_global_network` for cluster and relationship patterns
-5. For a single-contact health check, call `get_relationship_strength` and supplement it with contact details and interactions as needed
+3. `get_relationship_strengths` returns names, organizations, scores, and grades but no contact IDs. For each shortlisted contact, call `search_contacts({ query: "<name>" })` to resolve it before any detail read. Use the organization and other returned context (title, email, tags) to pick the match. If the search returns no match, or more than one that the context cannot separate, do not guess: skip detail enrichment for that contact and flag it as unresolved or ambiguous in the report
+4. For each contact resolved to exactly one ID, call `get_contact({ contactId })` and `get_contact_interactions({ contactId })` with that resolved `contactId` to explain why the relationship needs attention and suggest a specific action
+5. Analyze the global network with `get_global_network` for cluster and relationship patterns
+6. For a single-contact health check, resolve the contact the same way, then call `get_relationship_strength({ contactId })` and supplement it with contact details and interactions as needed
 
 ## Health Scoring
 
@@ -77,7 +78,9 @@ Relationship Health:
 - [ ] Relationship strength statistics summarized
 - [ ] Strong, Good, Moderate, Weak, and Dormant grades reported
 - [ ] Weak and Dormant relationships prioritized by value
-- [ ] Specific action suggested for each Weak or Dormant contact
+- [ ] Each shortlisted contact resolved to exactly one `contactId` via `search_contacts`; missing or ambiguous matches flagged, not guessed
+- [ ] Contact-specific explanations and actions backed only by an unambiguously resolved contact
+- [ ] Specific action suggested for each resolved Weak or Dormant contact
 - [ ] Network-level insights provided (clusters, trends)
 - [ ] Pending stale actions flagged
 ```
