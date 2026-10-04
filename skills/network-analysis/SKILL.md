@@ -17,23 +17,36 @@ description: Analyzes your Evergreen CRM contact network to surface clusters, br
 
 ## How It Works
 
-1. Pull the full network graph with `get_global_network`
-2. Identify top introducers with `get_top_introducers`
-3. Trace specific introduction chains with `get_introduction_chain`
-4. For key contacts, get detailed networks with `get_contact_network`
-5. Analyze for clusters, bridges, and structural insights
+1. Read network statistics, the relationship-type tally, and the top-20 degree ranking with `get_global_network`. Its contact list shows only the top 20 contacts and its edge list only 30 relationships; it takes no arguments, offset, or cursor, so neither list can be paged
+2. Read the edges for cluster and bridge analysis with `list_relationships({ limit: 100 })` — 100 is its maximum. Compare the number of distinct relationship IDs returned with the total relationships reported by `get_global_network` before claiming complete coverage
+3. Past 100 relationships, sweep in batches using `list_relationships` filters (`relationshipType`, `contactId`), keeping each slice under the cap and deduplicating overlapping results by relationship ID. There is no offset or cursor; a slice returning 100 may be incomplete. State which slices were covered and which remain unresolved, and qualify cluster, hub, bridge, and absence-of-connection claims to the edges actually read
+4. Identify top introducers with `get_top_introducers({ limit: 50 })` — its maximum (allowed range 1–50; default 10). If 50 return, label the ranking capped; if it returns "No introductions recorded yet.", report that instead of inventing a ranking
+5. Trace specific introduction chains with `get_introduction_chain` and get detailed networks for key contacts with `get_contact_network`
+6. Analyze the retrieved edges for clusters, bridges, and structural insights. Count distinct neighboring contacts for hub degrees, and state coverage up front. Network reads do not supply interaction recency, so omit activity-by-date figures from this analysis
 
 ## Analysis Outputs
+
+Open the report with a coverage line: distinct edges read versus the global relationship total, filters used, any slices at the 100-edge ceiling, and whether the introducer ranking hit 50. The illustrative sections below share this coverage:
+
+```markdown
+_Coverage: 81 of 81 relationships read with list_relationships(limit: 100),
+covering all 50 connected contacts; no filtered slices needed. Four introducers
+returned with limit: 50, below the cap. Cluster sizes overlap: Marcus belongs to
+Atlanta AI and Startup Founders; Jamie belongs to Startup Founders and College Network._
+```
 
 ### Top Introducers
 
 People who've connected you to the most contacts. These are high-value relationships to maintain.
+
+If no introductions are recorded, output "No introductions recorded yet." This does not mean the relationship graph is empty; skip the ranking and any unsupported introduction chains.
 
 ```markdown
 ## Your Top Introducers
 1. **David Kim** — Introduced you to 8 contacts (Sarah Chen, Marcus Webb, ...)
 2. **Alex Torres** — Introduced you to 5 contacts
 3. **Jamie Rodriguez** — Introduced you to 3 contacts
+4. **Sarah Chen** — Introduced you to 1 contact (Raj Patel)
 ```
 
 ### Network Clusters
@@ -44,17 +57,15 @@ Groups of contacts that are densely connected to each other.
 ## Network Clusters
 ### Atlanta AI Community (23 contacts)
 - Hub: David Kim (connected to 15 others in this cluster)
-- Active: 18 contacts interacted with in last 60 days
 - Key members: Sarah Chen, Marcus Webb, Lisa Park, Priya Sharma
 
 ### Startup Founders (14 contacts)
 - Hub: Alex Torres (connected to 9 others)
-- Active: 8 contacts interacted with in last 60 days
 - Key members: Marcus Webb, Jamie Rodriguez, Tom Bradley
 
 ### College Network (15 contacts)
 - Hub: Rachel Torres (connected to 6 others)
-- Mostly dormant: only 3 contacted in last 90 days
+- Key members: Jamie Rodriguez, Rachel Torres
 ```
 
 ### Bridge Contacts
@@ -65,7 +76,7 @@ People who connect otherwise separate parts of your network.
 ## Bridge Contacts
 - **Marcus Webb** bridges Atlanta AI ↔ Startup Founders
   (only person in both clusters)
-- **Rachel Torres** bridges College Network ↔ Angel Investors
+- **Jamie Rodriguez** bridges Startup Founders ↔ College Network
 ```
 
 ### Introduction Chains
@@ -77,7 +88,7 @@ How you got connected to someone through a series of introductions.
 You → David Kim (met at PyCon 2024) → Sarah Chen (introduced Sep 2025)
 
 ## How you know Raj Patel
-You → Sarah Chen → Raj Patel (technical contact at Meridian, Apr 2026)
+You → David Kim → Sarah Chen → Raj Patel (technical contact at Meridian, Apr 2026)
 ```
 
 ## Use Cases
@@ -94,8 +105,10 @@ You → Sarah Chen → Raj Patel (technical contact at Meridian, Apr 2026)
 
 ```
 Network Analysis:
-- [ ] Global network data retrieved
-- [ ] Top introducers identified and ranked
+- [ ] Global network summary retrieved with its top-20 / 30-edge caps understood
+- [ ] Edges read with `list_relationships({ limit: 100 })`, filtered batches deduplicated by relationship ID where needed
+- [ ] Coverage stated against the global total, with unresolved slices and capped reads named
+- [ ] Top introducers read with `limit: 50`, or no recorded introductions reported
 - [ ] Clusters detected with hub contacts
 - [ ] Bridge contacts surfaced
 - [ ] Introduction chains traced for key relationships
