@@ -18,7 +18,7 @@ description: Drafts personalized follow-up emails and messages based on Evergree
 
 1. Retrieve the contact with `get_contact` for full profile
 2. Pull recent interactions with `get_contact_interactions` for conversation history
-3. Check pending actions with `list_actions` for any commitments
+3. Check pending actions with `list_actions({ contactId, status: "pending" })` for any commitments, using the ID of the contact being reviewed
 4. Review the contact's network with `get_contact_network` for shared connections context
 5. Draft a message that references specific shared history and feels personal
 6. After sending, log the interaction with `log_interaction`
@@ -89,6 +89,7 @@ Best,
 ```
 Follow-Up Draft:
 - [ ] Contact history reviewed for relevant context
+- [ ] Commitments read with list_actions using that contact's contactId and status: "pending"
 - [ ] Message references specific shared details
 - [ ] Clear call-to-action or next step included
 - [ ] Tone matches the relationship level
