@@ -20,7 +20,14 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 2. Pull recent interactions with `get_contact_interactions` (last 5-10)
 3. Check pending actions with `list_actions` for open commitments
 4. Map their network with `get_contact_network` for shared connections
-5. Compile a briefing with talking points and reminders
+5. Read each contact's server-computed score and grade with `get_relationship_strength({ contactId })`
+6. Read who introduced each contact to you with `get_introducer({ contactId })`
+7. Compile a briefing with talking points and reminders
+
+Use the score and grade returned by Evergreen: Strong 80+, Good 60-79,
+Moderate 40-59, Weak 20-39, Dormant 0-19. Do not infer strength from the
+recent interaction list. Source both introducer lines from `get_introducer`;
+if it returns `**<name>** has no recorded introducer.`, omit both lines.
 
 ## Briefing Format
 
@@ -31,8 +38,8 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 
 ### Relationship Summary
 - How you met: [from notes]
-- Introduced by: [from relationships]
-- Relationship strength: [from interaction frequency]
+- Introduced by: [from get_introducer, if recorded]
+- Relationship strength: [server grade], [server score]/100 from get_relationship_strength
 
 ### Recent Interactions
 1. [Date] — [Type]: [Summary]
@@ -45,7 +52,7 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 
 ### Shared Network
 - You both know: [mutual contacts from network]
-- They were introduced by: [introducer]
+- They were introduced by: [from get_introducer, if recorded]
 
 ### Suggested Talking Points
 1. Follow up on: [topic from last interaction]
@@ -70,7 +77,7 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 ### Relationship Summary
 - Met at Atlanta AI Dinner (Sep 2025)
 - Introduced by: David Kim
-- Active relationship — 6 interactions in past 3 months
+- Relationship strength: Good, 60/100
 
 ### Recent Interactions
 1. Apr 3 — Email: Discussed API integration timeline, agreed on Q3
@@ -83,7 +90,7 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 
 ### Shared Network
 - You both know: David Kim (DataTech), Marcus Webb (DataFlow)
-- Sarah introduced you to: Lisa Park (Meridian Health, VP Product)
+- They were introduced by: David Kim
 
 ### Suggested Talking Points
 1. Follow up on Q3 integration timeline — any blockers?
@@ -111,6 +118,8 @@ Meeting Prep:
 - [ ] Last 5+ interactions summarized
 - [ ] Open actions identified
 - [ ] Shared network mapped
+- [ ] Server score and grade read with get_relationship_strength
+- [ ] Introducer read with get_introducer; both lines omitted if none recorded
 - [ ] 3-4 talking points prepared
 - [ ] Any deliverables ready to share
 ```
