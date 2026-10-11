@@ -17,12 +17,13 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 ## How It Works
 
 1. Pull overdue actions with `get_overdue_actions` and actions approaching their due dates with `get_actions_due_soon`
-2. Shortlist cold relationships with `get_relationship_strengths` — call it with `grade: "Weak"` and again with `grade: "Dormant"` (or set a `maxScore` ceiling), each with an explicit `limit: 100`, its maximum. The server scores every contact 0–100 and returns them sorted strongest-first, so one or two calls give you a ranked candidate set without scanning the whole database
-3. Resolve each shortlisted candidate to a contact ID with `search_contacts({ query: "<name>" })` — `get_relationship_strengths` returns name, organization, score and grade, but no contact ID
-4. Read each candidate's actual `Last Interaction` date from `get_contact` (and `get_contact_interactions` where the timeline matters) before stating any day count. The score blends recency with frequency, depth and variety, so a low grade means "probably cold, go check" — it is a candidate filter, not the verdict
-5. To scope the list to part of your network rather than all of it, use the filters `search_contacts` already exposes (`tags`, `organization`, `location`, `hasEmail`, `hasPhone`, `overdue`, `hasNextAction`, `recent`) with an explicit `limit: 100`, its maximum, since the default of 20 would sweep only a fraction of the database — then say which slices the list came from. Its results carry `Last Updated`, the record's modification time, not an interaction date
-6. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups
-7. Present a ranked list with context for each follow-up
+2. Read contact-level next steps with `search_contacts({ hasNextAction: true, limit: 100 })`. Include each returned contact's `- Next Action: <text>` alongside Action-record follow-ups, labelled **Contact-level Next Action note**. This is the contact's `nextAction` field, separate from Action records; the observed output supplies text without a date, so do not infer a due date or overdue status. If exactly 100 contacts return, state that coverage may be incomplete: 100 is the maximum and there is no offset or cursor. Narrow with supported filters if useful, deduplicate by contact ID, and report the slices read without promising complete coverage
+3. Shortlist cold relationships with `get_relationship_strengths` — call it with `grade: "Weak"` and again with `grade: "Dormant"` (or set a `maxScore` ceiling), each with an explicit `limit: 100`, its maximum. The server scores every contact 0–100 and returns them sorted strongest-first, so one or two calls give you a ranked candidate set without scanning the whole database
+4. Resolve each shortlisted candidate to a contact ID with `search_contacts({ query: "<name>" })` — `get_relationship_strengths` returns name, organization, score and grade, but no contact ID
+5. Read each candidate's actual `Last Interaction` date from `get_contact` (and `get_contact_interactions` where the timeline matters) before stating any day count. The score blends recency with frequency, depth and variety, so a low grade means "probably cold, go check" — it is a candidate filter, not the verdict
+6. To scope the list to part of your network rather than all of it, use the filters `search_contacts` already exposes (`tags`, `organization`, `location`, `hasEmail`, `hasPhone`, `overdue`, `hasNextAction`, `recent`) with an explicit `limit: 100`, its maximum, since the default of 20 would sweep only a fraction of the database — then say which slices the list came from. Its results carry `Last Updated`, the record's modification time, not an interaction date
+7. Prioritize by: overdue actions first, then high-value relationships, then cadence-based follow-ups; prioritize contact-level notes by their text and relationship context, without inventing deadlines
+8. Present a ranked list with context for each follow-up
 
 ## Priority Framework
 
@@ -43,13 +44,18 @@ description: Generates a prioritized follow-up list from Evergreen CRM based on 
 2. **Marcus Webb** — Intro to Jamie at Acme Labs (due Apr 4) [Medium priority]
 3. **Lisa Park** — Review proposal draft (due Apr 5) [Medium priority]
 
-### Stale Relationships (5)
-4. **David Kim** — Weak (score 32). Last interaction: 45 days ago (meeting). Was discussing partnership.
-5. **Rachel Torres** — Dormant (score 18). Last interaction: 38 days ago (email). Offered to help with hiring.
+### Contact-Level Next Action Notes (1)
+4. **Sarah Chen** — Ask about the pilot rollout (contact-level note; separate from Action records, no date shown).
 
-### Cadence Check-Ins (4)
-6. **Tom Bradley** — Quarterly check-in due. Last: Jan 15 coffee.
-7. **Nina Patel** — Monthly sync overdue. Last: Mar 1 call.
+Coverage: 1 contact returned by search_contacts({ hasNextAction: true, limit: 100 }); below the ceiling.
+
+### Stale Relationships (2)
+5. **David Kim** — Weak (score 32). Last interaction: 45 days ago (meeting). Was discussing partnership.
+6. **Rachel Torres** — Dormant (score 18). Last interaction: 38 days ago (email). Offered to help with hiring.
+
+### Cadence Check-Ins (2)
+7. **Tom Bradley** — Quarterly check-in due. Last: Jan 15 coffee.
+8. **Nina Patel** — Monthly sync overdue. Last: Mar 1 call.
 ```
 
 Note that Rachel grades lower than David despite the shorter gap — the score
@@ -76,7 +82,10 @@ date from `get_contact` against these thresholds yourself, one candidate at a ti
 
 ```
 Follow-Up Review:
-- [ ] Overdue actions surfaced and prioritized
+- [ ] Overdue Action records surfaced and prioritized
+- [ ] Contact-level Next Action text read with search_contacts({ hasNextAction: true, limit: 100 }) and listed separately as notes
+- [ ] Next Action note coverage stated; exactly 100 results flagged as potentially incomplete
+- [ ] No dates or overdue status inferred for contact-level notes; no contact or Action records written
 - [ ] Cold candidates shortlisted with `get_relationship_strengths` (Weak and Dormant grades, explicit `limit: 100`)
 - [ ] Each candidate resolved to an ID with `search_contacts({ query })`
 - [ ] Every day count read from `get_contact`'s `Last Interaction` — never from a score or from `Last Updated`
