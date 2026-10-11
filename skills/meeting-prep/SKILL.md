@@ -16,9 +16,9 @@ description: Generates a pre-meeting briefing from Evergreen CRM — contact pro
 
 ## How It Works
 
-1. Look up the contact(s) with `get_contact` for full profile
+1. Look up the contact(s) with `get_contact` for full profile. Read the contact-level `nextAction` text shown under the `**Actions:**` heading (not a `Next Action` heading) and include it in Open Items as a **Contact-level Next Action note** when present. This text is separate from Action records; the observed output shows no date, so do not invent a deadline or overdue status
 2. Pull recent interactions with `get_contact_interactions` (last 5-10)
-3. Check pending actions with `list_actions({ contactId, status: "pending" })` for open commitments, using the ID of the contact being reviewed
+3. Check pending actions with `list_actions({ contactId, status: "pending" })` for open Action-record commitments, keeping them separate from the contact-level note and using the ID of the contact being reviewed
 4. Map their network with `get_contact_network` for shared connections
 5. Read each contact's server-computed score and grade with `get_relationship_strength({ contactId })`
 6. Read who introduced each contact to you with `get_introducer({ contactId })`
@@ -47,6 +47,9 @@ if it returns `**<name>** has no recorded introducer.`, omit both lines.
 3. [Date] — [Type]: [Summary]
 
 ### Open Items
+Contact-level Next Action note (from get_contact): [next-action text, if present; no date shown]
+
+Pending Action records (from list_actions):
 - [ ] [Pending action 1]
 - [ ] [Pending action 2]
 
@@ -85,6 +88,9 @@ if it returns `**<name>** has no recorded introducer.`, omit both lines.
 3. Mar 5 — Email: Shared healthcare AI benchmarks paper
 
 ### Open Items
+Contact-level Next Action note: Ask about the pilot rollout (no date shown)
+
+Pending Action records:
 - [ ] Send updated API pricing sheet (due Apr 10)
 - [ ] Intro to your ML engineer for technical deep-dive
 
@@ -96,7 +102,7 @@ if it returns `**<name>** has no recorded introducer.`, omit both lines.
 1. Follow up on Q3 integration timeline — any blockers?
 2. Ask about the patient data pipeline migration she mentioned
 3. Discuss the ML engineer intro — ready to make it?
-4. Share the updated pricing sheet
+4. Share the updated pricing sheet and ask about the pilot rollout from the contact-level note
 ```
 
 ## Multi-Person Meetings
@@ -115,6 +121,8 @@ For meetings with multiple attendees, generate a brief for each person and add a
 ```
 Meeting Prep:
 - [ ] Contact profile reviewed
+- [ ] Contact-level Next Action text under get_contact's **Actions:** included when present, distinct from pending Action records
+- [ ] No deadline or overdue status inferred for the contact-level note; no contact or Action records written
 - [ ] Last 5+ interactions summarized
 - [ ] Open actions read with list_actions using that contact's contactId and status: "pending"
 - [ ] Shared network mapped
