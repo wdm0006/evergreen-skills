@@ -23,6 +23,11 @@ description: Processes raw meeting notes into structured Evergreen CRM records â
 5. For new people mentioned, create contacts with `create_contact`
 6. Append detailed notes to the contact's `notes` field with `update_contact` for relevant contacts
 7. Create relationships with `create_relationship` if new connections were established
+8. After the interaction is logged, keep each contact's headline next step current. Read the contact's existing `nextAction` text with `get_contact` (it appears under the `**Actions:**` heading). When the notes contain one clear next step for that contact, set it with `update_contact({ contactId, nextAction })`
+   - If the contact already has a non-empty `nextAction` that differs, show the old and new text and ask before replacing it; if the user doesn't confirm, leave it and report the proposed text instead. Never overwrite silently
+   - If the notes have no clear single next step, leave the field alone
+   - Set `nextActionDate` only when the notes state an explicit date; reads show no date for this field, so never invent one
+   - `nextAction` is the one headline step. Dated commitments and multiple items still go in Action records via `create_action`
 
 ## Extraction Targets
 
@@ -35,6 +40,7 @@ description: Processes raw meeting notes into structured Evergreen CRM records â
 | New contacts | "You should talk to..." | `create_contact` + flag for follow-up |
 | Relationships | "Sarah works with Marcus on..." | `create_relationship` |
 | Follow-ups | Next meeting, deadlines | `create_action` with dates |
+| Headline next step | One clear "next step" for a contact | `update_contact` with `nextAction` (confirm before replacing an existing one) |
 
 ## Example
 
@@ -90,6 +96,11 @@ We agreed to:
    })
 
 6. update_contact({ contactId: sarah_id, notes: "Apr 5 call: Q3 pilot confirmed. New tech contact: Raj Patel (data engineer). Lisa handling procurement." })
+
+7. update_contact({ contactId: lisa_id, nextAction: "Send security questionnaire" })
+   (get_contact showed no existing next action for Lisa, so no confirmation was needed.
+   Had it shown different text, ask before replacing it. No nextActionDate: the notes
+   give the Apr 15 deadline, which is already on the create_action record.)
 ```
 
 ## Checklist
@@ -102,6 +113,7 @@ Post-Meeting Processing:
 - [ ] New contacts created (or flagged for creation)
 - [ ] Relevant notes appended to contact records
 - [ ] Relationships updated if new connections established
+- [ ] Contact `nextAction` checked; set only for a clear single next step, with old vs new shown before any replacement
 ```
 
 ## Learn More
